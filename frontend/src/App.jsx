@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { Calculator, Info, CheckCircle, AlertCircle } from "lucide-react";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
-
 const App = () => {
   const [ingresos, setIngresos] = useState("");
   const [tipoActividad, setTipoActividad] = useState("venta-productos");
@@ -10,34 +8,60 @@ const App = () => {
   const [resultado, setResultado] = useState(null);
   const [mostrarEducativo, setMostrarEducativo] = useState(false);
 
-  // 🔗 Ahora el cálculo se hace en el backend
+  // 🔗 Cálculo temporal local (sin backend)
   const calcularImpuestos = async () => {
     const ingresosMensuales = parseFloat(ingresos.replace(/[^\d]/g, ""));
     if (!ingresosMensuales || ingresosMensuales <= 0) return;
 
     try {
-      const res = await fetch(`${API_BASE}/api/calcular`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          ingresos: ingresosMensuales,
-          tipoActividad,
-          tiempoNegocio,
-        }),
-      });
+      // Tabla de tarifas RST local
+      const tarifasRST = {
+        "venta-productos": {
+          "1-3-anos": 0.008,    // 0.8%
+          "4-6-anos": 0.012,    // 1.2%
+          "7-mas-anos": 0.016,  // 1.6%
+        },
+        "servicios-personales": {
+          "1-3-anos": 0.015,    // 1.5%
+          "4-6-anos": 0.025,    // 2.5%
+          "7-mas-anos": 0.035,  // 3.5%
+        },
+        "venta-ambulante": {
+          "1-3-anos": 0.008,    // 0.8%
+          "4-6-anos": 0.012,    // 1.2%
+          "7-mas-anos": 0.016,  // 1.6%
+        },
+        "otro": {
+          "1-3-anos": 0.015,    // 1.5%
+          "4-6-anos": 0.025,    // 2.5%
+          "7-mas-anos": 0.035,  // 3.5%
+        }
+      };
 
-      if (!res.ok) {
-        throw new Error("Error en el servidor");
-      }
+      // Obtener tarifa según actividad y tiempo
+      const tarifa = tarifasRST[tipoActividad]?.[tiempoNegocio] || 0.015;
+      const impuestoMensual = ingresosMensuales * tarifa;
 
-      const data = await res.json();
-      // data: { ingresosMensuales, impuestoMensual, tarifa, tipoActividad }
+      // Nombres descriptivos para mostrar
+      const tiposActividad = {
+        "venta-productos": "Venta de productos",
+        "servicios-personales": "Servicios personales", 
+        "venta-ambulante": "Venta ambulante",
+        "otro": "Otros"
+      };
+
+      // Simular respuesta del backend
+      const data = {
+        ingresosMensuales: ingresosMensuales,
+        impuestoMensual: Math.round(impuestoMensual),
+        tarifa: (tarifa * 100).toFixed(1),
+        tipoActividad: tiposActividad[tipoActividad] || "Otros"
+      };
+
       setResultado(data);
     } catch (err) {
       console.error(err);
-      alert(
-        "No se pudo calcular el impuesto. Verifica que el backend esté corriendo."
-      );
+      alert("Error al calcular el impuesto");
     }
   };
 

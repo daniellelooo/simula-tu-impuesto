@@ -7,8 +7,7 @@ Una aplicación web completa que ayuda a emprendedores colombianos a calcular cu
 ```
 simula-tu-impuesto/
 ├── 📱 frontend/          # Aplicación React + Vite
-├── 🔧 backend/           # API Node.js/Express (pendiente)
-├── 📚 docs/              # Documentación del proyecto
+├── 🔧 backend/           # API Next.js
 ├── README.md             # Este archivo
 └── .gitignore            # Archivos ignorados por Git
 ```
@@ -25,21 +24,17 @@ simula-tu-impuesto/
 git clone https://github.com/daniellelooo/simula-tu-impuesto.git
 cd simula-tu-impuesto
 
-# Instalar dependencias del frontend
-cd frontend
+# Instalar dependencias
 npm install
-
-# Volver a la raíz (cuando esté listo el backend)
-cd ..
 ```
 
 ### Desarrollo
 ```bash
-# Solo frontend (por ahora)
-cd frontend
+# Iniciar frontend + backend simultáneamente
 npm run dev
 
-# Acceder a: http://localhost:5173
+# Frontend: http://localhost:5173
+# Backend: http://localhost:3000
 ```
 
 ## 🎯 Funcionalidades
@@ -48,6 +43,11 @@ npm run dev
 - 🧮 **Calculadora RST interactiva**
 - 💰 **Formateo de moneda colombiana**
 - 📱 **Diseño responsive con Tailwind CSS**
+
+### ✅ Backend (Completado)
+- 🔧 **API Next.js con TypeScript**
+- 📊 **Endpoint de cálculo de impuestos**
+- 🌐 **CORS configurado para desarrollo**
 - 📚 **Sección educativa sobre formalización**
 - 🎨 **Interfaz moderna e intuitiva**
 
