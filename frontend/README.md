@@ -166,12 +166,7 @@ VITE_API_BASE_URL=https://tu-api-production.com
 }
 ```
 
-## 📄 Documentación Adicional
-
-- [**Frontend Documentation**](../docs/FRONTEND_DOCUMENTATION.md) - Documentación técnica completa
-- [**Reorganization Guide**](../REORGANIZATION_GUIDE.md) - Guía de estructura del proyecto
-
-## 🐛 Problemas Conocidos
+##  Problemas Conocidos
 
 - El backend debe estar corriendo en puerto 3000 para los cálculos
 - Sin backend, la calculadora mostrará un error
