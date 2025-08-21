@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Calculator, Info, CheckCircle, AlertCircle } from "lucide-react";
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3001";
+const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
 
 const App = () => {
   const [ingresos, setIngresos] = useState("");
@@ -16,7 +16,7 @@ const App = () => {
     if (!ingresosMensuales || ingresosMensuales <= 0) return;
 
     try {
-      const res = await fetch(`http://localhost:3001/api/calcular`, {
+      const res = await fetch(`${API_BASE}/api/calcular`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
