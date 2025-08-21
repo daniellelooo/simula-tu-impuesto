@@ -1,12 +1,12 @@
-# 📱 Frontend - SimulaTuImpuesto
+# 📱 Frontend - Simula tu Impuesto
 
-Aplicación React que proporciona una calculadora interactiva del Régimen Simple de Tributación (RST) para emprendedores colombianos.
+Interfaz React que proporciona una calculadora interactiva del Régimen Simple de Tributación (RST) para emprendedores colombianos.
 
 ## 🚀 Inicio Rápido
 
 ### Prerrequisitos
-- Node.js 16+
-- npm o yarn
+- Node.js 18+
+- npm
 
 ### Instalación
 ```bash
@@ -27,10 +27,10 @@ npm run preview
 
 ## 🛠️ Tecnologías
 
-- **React 19.1.1** - Biblioteca de UI
-- **Vite 7.1.2** - Build tool y servidor de desarrollo
-- **Tailwind CSS 3.4.17** - Framework de estilos utilitarios
-- **Lucide React 0.540.0** - Biblioteca de iconos
+- **React 19** - Biblioteca de UI
+- **Vite** - Build tool y servidor de desarrollo
+- **Tailwind CSS** - Framework de estilos utilitarios
+- **Lucide React** - Biblioteca de iconos
 - **ESLint** - Linting y calidad de código
 
 ## 📁 Estructura
