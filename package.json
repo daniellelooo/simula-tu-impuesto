@@ -1,31 +1,48 @@
 {
   "name": "simula-tu-impuesto",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "version": "1.0.0",
+  "description": "Calculadora de impuestos RST para emprendedores colombianos - Monorepo",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "lint": "eslint .",
-    "preview": "vite preview"
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "build": "npm run build:frontend && npm run build:backend",
+    "build:frontend": "cd frontend && npm run build",
+    "build:backend": "cd backend && npm run build",
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && npm install",
+    "install:frontend": "cd frontend && npm install",
+    "install:backend": "cd backend && npm install",
+    "lint": "npm run lint:frontend && npm run lint:backend",
+    "lint:frontend": "cd frontend && npm run lint",
+    "lint:backend": "cd backend && npm run lint",
+    "clean": "rimraf frontend/node_modules backend/node_modules frontend/dist backend/dist",
+    "start": "npm run dev"
   },
-  "dependencies": {
-    "lucide-react": "^0.540.0",
-    "react": "^19.1.1",
-    "react-dom": "^19.1.1"
+  "keywords": [
+    "impuestos",
+    "rst",
+    "colombia",
+    "emprendimiento",
+    "calculadora",
+    "tributacion",
+    "formalizacion"
+  ],
+  "author": "Daniel",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/daniellelooo/simula-tu-impuesto.git"
   },
+  "bugs": {
+    "url": "https://github.com/daniellelooo/simula-tu-impuesto/issues"
+  },
+  "homepage": "https://github.com/daniellelooo/simula-tu-impuesto#readme",
   "devDependencies": {
-    "@eslint/js": "^9.33.0",
-    "@types/react": "^19.1.10",
-    "@types/react-dom": "^19.1.7",
-    "@vitejs/plugin-react": "^5.0.0",
-    "autoprefixer": "^10.4.21",
-    "eslint": "^9.33.0",
-    "eslint-plugin-react-hooks": "^5.2.0",
-    "eslint-plugin-react-refresh": "^0.4.20",
-    "globals": "^16.3.0",
-    "postcss": "^8.5.6",
-    "tailwindcss": "^3.4.17",
-    "vite": "^7.1.2"
+    "concurrently": "^8.2.0",
+    "rimraf": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0"
   }
 }

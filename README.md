@@ -1,244 +1,160 @@
-# 🧮 SimulaTuImpuesto
+# 🧮 SimulaTuImpuesto - Monorepo
 
-Una aplicación web interactiva que ayuda a emprendedores colombianos a calcular cuánto pagarían en impuestos si formalizan su negocio bajo el Régimen Simple de Tributación (RST).
+Una aplicación web completa que ayuda a emprendedores colombianos a calcular cuánto pagarían en impuestos si formalizan su negocio bajo el Régimen Simple de Tributación (RST).
 
-## 🎯 Objetivo
-
-Reducir la barrera de entrada a la formalización empresarial en Colombia proporcionando información clara y accesible sobre las obligaciones tributarias, desmitificando conceptos erróneos y mostrando que formalizar un negocio no es tan costoso como muchos creen.
-
-## ✨ Características Principales
-
-### 🧮 Calculadora RST
-
-- **Simulación en tiempo real** de impuestos según ingresos mensuales
-- **Múltiples tipos de actividad**: Venta de productos, servicios personales, venta ambulante, otros
-- **Tarifas progresivas** basadas en el tiempo del negocio (1-3 años, 4-6 años, 7+ años)
-- **Resultados detallados** con desglose visual de información
-
-### 📚 Contenido Educativo
-
-- **¿Qué es RST?**: Explicación del Régimen Simple de Tributación
-- **Beneficios de formalización**: Acceso a créditos, seguridad social, clientes corporativos
-- **Desmitificación**: Aclaración de creencias falsas sobre impuestos
-
-### 🎨 Diseño
-
-- **Interfaz moderna** con Tailwind CSS
-- **Responsive design** optimizado para móviles y desktop
-- **UX intuitiva** con formularios guiados y resultados claros
-
-## 🛠️ Tecnologías Utilizadas
-
-### Frontend
-
-- **React 18** - Biblioteca de interfaz de usuario
-- **Vite** - Build tool y desarrollo rápido
-- **Tailwind CSS 3** - Framework de estilos utilitarios
-- **Lucide React** - Iconos modernos y consistentes
-
-### Herramientas de Desarrollo
-
-- **ESLint** - Linting y calidad de código
-- **PostCSS** - Procesamiento de CSS
-- **Autoprefixer** - Compatibilidad entre navegadores
-
-## 🏗️ Arquitectura del Código
-
-### Componentes Principales
-
-#### `App.jsx` - Componente Principal
-
-```javascript
-// Estado principal de la aplicación
-const [ingresos, setIngresos] = useState("");
-const [tipoActividad, setTipoActividad] = useState("venta-productos");
-const [tiempoNegocio, setTiempoNegocio] = useState("1-3-anos");
-const [resultado, setResultado] = useState(null);
-```
-
-#### Lógica de Cálculo
-
-```javascript
-// Tarifas RST por actividad y tiempo
-const tarifasRST = {
-  "venta-productos": {
-    "1-3-anos": 0.01, // 1%
-    "4-6-anos": 0.015, // 1.5%
-    "7-mas-anos": 0.02, // 2%
-  },
-  // ... más actividades
-};
-```
-
-#### Funcionalidades Clave
-
-- **formatCurrency()**: Formato de moneda colombiana
-- **calcularImpuestos()**: Lógica principal de cálculo
-- **handleIngresosChange()**: Formateo en tiempo real de inputs
-
-### Estructura de Carpetas
+## 📁 Estructura del Proyecto
 
 ```
 simula-tu-impuesto/
-├── public/
-│   └── index.html
-├── src/
-│   ├── App.jsx          # Componente principal
-│   ├── main.jsx         # Punto de entrada
-│   └── index.css        # Estilos globales y utilidades
-├── tailwind.config.js   # Configuración de Tailwind
-├── vite.config.js       # Configuración de Vite
-└── package.json         # Dependencias y scripts
+├── 📱 frontend/          # Aplicación React + Vite
+├── 🔧 backend/           # API Node.js/Express (pendiente)
+├── 📚 docs/              # Documentación del proyecto
+├── README.md             # Este archivo
+└── .gitignore            # Archivos ignorados por Git
 ```
 
-## 🚀 Instalación y Desarrollo
+## 🚀 Inicio Rápido
 
 ### Prerrequisitos
-
 - Node.js 16+
 - npm o yarn
 
-### Instalación
-
+### Instalación Completa
 ```bash
 # Clonar el repositorio
-git clone https://github.com/tu-usuario/simula-tu-impuesto.git
+git clone https://github.com/daniellelooo/simula-tu-impuesto.git
 cd simula-tu-impuesto
 
-# Instalar dependencias
+# Instalar dependencias del frontend
+cd frontend
 npm install
 
-# Iniciar servidor de desarrollo
-npm run dev
+# Volver a la raíz (cuando esté listo el backend)
+cd ..
 ```
 
-### Scripts Disponibles
-
+### Desarrollo
 ```bash
-npm run dev      # Servidor de desarrollo
-npm run build    # Build para producción
-npm run preview  # Vista previa de producción
-npm run lint     # Verificar calidad de código
+# Solo frontend (por ahora)
+cd frontend
+npm run dev
+
+# Acceder a: http://localhost:5173
 ```
 
-## 📊 Funcionalidades Detalladas
+## 🎯 Funcionalidades
 
-### Sistema de Tarifas RST
+### ✅ Frontend (Completado)
+- 🧮 **Calculadora RST interactiva**
+- 💰 **Formateo de moneda colombiana**
+- 📱 **Diseño responsive con Tailwind CSS**
+- 📚 **Sección educativa sobre formalización**
+- 🎨 **Interfaz moderna e intuitiva**
 
-La aplicación implementa las tarifas oficiales del Régimen Simple de Tributación:
+### 🔄 Backend (En desarrollo)
+- 🔗 **API REST para cálculos**
+- 📊 **Tabla de tarifas RST oficiales**
+- ✅ **Validaciones de datos**
+- 🔒 **Manejo de errores**
 
-| Actividad            | 1-3 años | 4-6 años | 7+ años |
-| -------------------- | -------- | -------- | ------- |
-| Venta de productos   | 1%       | 1.5%     | 2%      |
-| Servicios personales | 2.5%     | 3%       | 3.5%    |
-| Venta ambulante      | 0.8%     | 1.2%     | 1.6%    |
-| Otros                | 2%       | 2.5%     | 3%      |
+## 🛠️ Tecnologías
 
-### Validaciones Implementadas
+### Frontend
+- **React 19.1.1** - Biblioteca de UI
+- **Vite 7.1.2** - Build tool y desarrollo
+- **Tailwind CSS 3.4.17** - Estilos utilitarios
+- **Lucide React** - Iconos modernos
 
-- **Formato de moneda**: Separadores de miles automáticos
-- **Entrada numérica**: Solo acepta números válidos
-- **Cálculos en tiempo real**: Actualización inmediata de resultados
+### Backend (Planned)
+- **Node.js** - Runtime de JavaScript
+- **Express.js** - Framework web
+- **Cors** - Manejo de CORS
+- **Helmet** - Seguridad HTTP
 
-## 🎯 Metodología de Desarrollo
+## 📋 Scripts Disponibles
 
-### Principios Aplicados
+### Frontend
+```bash
+cd frontend
+npm run dev      # Servidor de desarrollo
+npm run build    # Build de producción
+npm run preview  # Preview del build
+npm run lint     # Linting con ESLint
+```
 
-1. **Mobile First**: Diseño responsive desde móvil hacia desktop
-2. **Componente único**: Arquitectura simple para prototipo rápido
-3. **Estado local**: Uso de React hooks para gestión de estado
-4. **Utility-first CSS**: Tailwind para desarrollo ágil
+### Proyecto Completo (Futuro)
+```bash
+npm run dev              # Frontend + Backend simultáneamente
+npm run dev:frontend     # Solo frontend
+npm run dev:backend      # Solo backend
+npm run build           # Build completo
+npm run install:all     # Instalar todas las dependencias
+```
 
-### Decisiones Técnicas
+## 🌐 URLs de Desarrollo
 
-- **React sin backend**: Cálculos del lado cliente para simplicidad
-- **Vite sobre Create React App**: Build más rápido y configuración moderna
-- **Tailwind v3**: Estabilidad sobre funcionalidades experimentales
+- **Frontend:** http://localhost:5173
+- **Backend:** http://localhost:3000 (cuando esté listo)
+- **API:** http://localhost:3000/api (cuando esté listo)
 
-## 🔮 Roadmap y Mejoras Futuras
+## 📚 Documentación
 
-### 📈 Fase 2 - Expansión de Funcionalidades
+- [**Frontend Documentation**](./docs/FRONTEND_DOCUMENTATION.md) - Documentación completa del frontend
+- [**API Documentation**](./docs/API_DOCUMENTATION.md) - Documentación de la API (pendiente)
+- [**Reorganization Guide**](./REORGANIZATION_GUIDE.md) - Guía de reorganización del proyecto
 
-- [ ] **Comparador de regímenes**: RST vs Régimen Ordinario
-- [ ] **Calculadora de beneficios**: Proyección de ahorros anuales
-- [ ] **Simulador de crecimiento**: Impacto fiscal del crecimiento del negocio
-- [ ] **Exportar resultados**: PDF con resumen de simulación
-- [ ] **Historial de cálculos**: Guardar simulaciones anteriores
+## 🎯 Objetivo del Proyecto
 
-### 🎨 Fase 3 - Mejoras de UX
+Reducir la barrera de entrada a la formalización empresarial en Colombia proporcionando:
 
-- [ ] **Gráficos interactivos**: Visualización de datos con Chart.js
-- [ ] **Animaciones**: Micro-interacciones para mejor experiencia
-- [ ] **Tutorial guiado**: Onboarding para nuevos usuarios
-- [ ] **Modo oscuro**: Alternativa visual
-- [ ] **PWA**: Funcionalidad offline
+1. **📊 Cálculos precisos** del RST según actividad y tiempo
+2. **📚 Información educativa** sobre beneficios de formalización  
+3. **🚫 Desmitificación** de creencias falsas sobre impuestos
+4. **💡 Interfaz accesible** para emprendedores sin conocimientos técnicos
 
-### 🧠 Fase 4 - Inteligencia y Contenido
+## 🇨🇴 Contexto Colombiano
 
-- [ ] **Chatbot educativo**: Asistente virtual para preguntas
-- [ ] **Guías paso a paso**: Proceso completo de formalización
-- [ ] **Calculadora de costos**: Incluir otros gastos de formalización
-- [ ] **Base de conocimiento**: FAQ expandida
-- [ ] **Videos educativos**: Contenido multimedia
+### Régimen Simple de Tributación (RST)
+- Sistema simplificado para pequeñas empresas
+- Tarifas progresivas según actividad y tiempo
+- Una sola declaración que incluye múltiples impuestos
+- Ideal para microempresarios
 
-### 🔧 Fase 5 - Mejoras Técnicas
+### Tipos de Actividad Soportados
+- 🛍️ **Venta de productos**
+- 👥 **Servicios personales** 
+- 🚶 **Venta ambulante**
+- 🔧 **Otros tipos de actividad**
 
-- [ ] **Backend API**: Base de datos para analytics y usuarios
-- [ ] **Autenticación**: Cuentas de usuario personalizadas
-- [ ] **Testing**: Cobertura de pruebas unitarias e integración
-- [ ] **CI/CD**: Pipeline automatizado de desarrollo
-- [ ] **Performance**: Optimización de carga y renderizado
-- [ ] **SEO avanzado**: Optimización para motores de búsqueda
+### Rangos de Tiempo
+- 📅 **1-3 años** de operación
+- 📅 **4-6 años** de operación  
+- 📅 **7+ años** de operación
 
-### 🌐 Fase 6 - Expansión
-
-- [ ] **Multi-país**: Soporte para otros países latinoamericanos
-- [ ] **Multi-idioma**: Internacionalización
-- [ ] **API pública**: Permitir integraciones externas
-- [ ] **Versión móvil nativa**: App para Android/iOS
-- [ ] **Integración DIAN**: Conexión con servicios oficiales
-
-## 🤝 Contribuciones
-
-### Cómo Contribuir
+## 🤝 Contribución
 
 1. Fork el proyecto
-2. Crear branch para feature (`git checkout -b feature/nueva-funcionalidad`)
-3. Commit cambios (`git commit -m 'Agregar nueva funcionalidad'`)
-4. Push al branch (`git push origin feature/nueva-funcionalidad`)
-5. Abrir Pull Request
-
-### Reportar Issues
-
-- Usar templates de issues para bugs y feature requests
-- Incluir información del navegador y sistema operativo
-- Proporcionar pasos para reproducir bugs
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Commit tus cambios (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
 
 ## 📄 Licencia
 
-Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE.md](LICENSE.md) para detalles.
+Este proyecto está bajo la Licencia MIT - ver el archivo [LICENSE](LICENSE) para detalles.
 
 ## 👨‍💻 Autor
 
-**Daniel Leon Lopez**
+**Daniel** - [@daniellelooo](https://github.com/daniellelooo)
 
-## 🙏 Agradecimientos
+## 🆘 Soporte
 
-- **DIAN Colombia** - Por la información oficial sobre el RST
-- **Comunidad React** - Por las herramientas y documentación
-- **Tailwind CSS** - Por el framework de diseño
-- **Emprendedores colombianos** - Inspiración para crear esta herramienta
+¿Tienes preguntas? ¿Encontraste un bug? ¿Quieres sugerir una mejora?
 
-## 📞 Soporte
-
-Si tienes preguntas o necesitas ayuda:
-
-- 📧 Email: tu-email@dominio.com
-- 💬 Discussions: Usar GitHub Discussions para preguntas
-- 🐛 Bugs: Reportar en GitHub Issues
+- 🐛 [Reportar un bug](https://github.com/daniellelooo/simula-tu-impuesto/issues)
+- 💡 [Sugerir una mejora](https://github.com/daniellelooo/simula-tu-impuesto/issues)
+- 📧 [Contacto directo](mailto:tu-email@dominio.com)
 
 ---
 
-⭐ **Si este proyecto te fue útil, no olvides darle una estrella en GitHub**
-
-_Creado con ❤️ para la comunidad emprendedora colombiana_
+⭐ **¡Dale una estrella si este proyecto te ayuda!** ⭐
