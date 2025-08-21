@@ -19,6 +19,7 @@ frontend/dist/
 frontend/dist-ssr/
 backend/dist/
 backend/build/
+backend/.next/
 build/
 coverage/
 
@@ -30,6 +31,10 @@ coverage/
 .env.production.local
 frontend/.env*
 backend/.env*
+
+# Next.js
+.next/
+out/
 
 # Editor directories and files
 .vscode/*

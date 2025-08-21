@@ -51,11 +51,12 @@ npm run dev
 - 📚 **Sección educativa sobre formalización**
 - 🎨 **Interfaz moderna e intuitiva**
 
-### 🔄 Backend (En desarrollo)
-- 🔗 **API REST para cálculos**
-- 📊 **Tabla de tarifas RST oficiales**
+### ✅ Backend (Completado)
+- 🔗 **API REST con Next.js 15**
+- 📊 **Tabla de tarifas RST oficiales implementada**
 - ✅ **Validaciones de datos**
-- 🔒 **Manejo de errores**
+- 🔒 **Manejo de errores y CORS**
+- 🧮 **Endpoint `/api/calcular` funcional**
 
 ## 🛠️ Tecnologías
 
@@ -65,11 +66,11 @@ npm run dev
 - **Tailwind CSS 3.4.17** - Estilos utilitarios
 - **Lucide React** - Iconos modernos
 
-### Backend (Planned)
+### Backend (Completado)
+- **Next.js 15.4.7** - Framework full-stack
 - **Node.js** - Runtime de JavaScript
-- **Express.js** - Framework web
-- **Cors** - Manejo de CORS
-- **Helmet** - Seguridad HTTP
+- **TypeScript 5** - Tipado estático
+- **API Routes** - Endpoints RESTful integrados
 
 ## 📋 Scripts Disponibles
 
