@@ -5,21 +5,26 @@ API Next.js que proporciona los cálculos del Régimen Simple de Tributación (R
 ## 🚀 Inicio Rápido
 
 ### Prerrequisitos
+
 - Node.js 18+
 - npm
 
 ### Instalación
+
 ```bash
 npm install
 ```
 
 ### Desarrollo
+
 ```bash
 npm run dev
 ```
+
 La API estará disponible en [http://localhost:3000](http://localhost:3000)
 
 ### Build de Producción
+
 ```bash
 npm run build
 npm run start
@@ -52,6 +57,7 @@ backend/
 Calcula el impuesto RST basado en los parámetros proporcionados.
 
 #### Request Body
+
 ```json
 {
   "ventasMensuales": 5000000,
@@ -61,6 +67,7 @@ Calcula el impuesto RST basado en los parámetros proporcionados.
 ```
 
 #### Response
+
 ```json
 {
   "success": true,
@@ -75,6 +82,7 @@ Calcula el impuesto RST basado en los parámetros proporcionados.
 ```
 
 #### Errores
+
 ```json
 {
   "success": false,
@@ -85,21 +93,25 @@ Calcula el impuesto RST basado en los parámetros proporcionados.
 ## 💰 Tabla de Tarifas RST
 
 ### Venta de Productos
+
 - **1-3 años**: 1.4%
 - **4-6 años**: 2.8%
 - **7+ años**: 4.2%
 
 ### Servicios Personales
+
 - **1-3 años**: 1.4%
 - **4-6 años**: 2.8%
 - **7+ años**: 4.2%
 
 ### Venta Ambulante
+
 - **1-3 años**: 1.0%
 - **4-6 años**: 2.0%
 - **7+ años**: 3.0%
 
 ### Otros
+
 - **1-3 años**: 1.4%
 - **4-6 años**: 2.8%
 - **7+ años**: 4.2%
@@ -107,12 +119,14 @@ Calcula el impuesto RST basado en los parámetros proporcionados.
 ## 🔧 Configuración
 
 ### Variables de Entorno
+
 ```bash
 # No se requieren variables de entorno adicionales
 # Next.js maneja automáticamente la configuración
 ```
 
 ### CORS
+
 La API está configurada para aceptar requests desde `http://localhost:5173` (frontend) durante el desarrollo.
 
 ## 🧪 Testing
@@ -123,7 +137,7 @@ curl -X POST http://localhost:3000/api/calcular \
   -H "Content-Type: application/json" \
   -d '{
     "ventasMensuales": 5000000,
-    "tipoActividad": "venta_productos", 
+    "tipoActividad": "venta_productos",
     "tiempoActividad": "1-3_años"
   }'
 ```
@@ -148,6 +162,7 @@ El backend está diseñado para funcionar en conjunto con el frontend React. Dur
 ## 🚀 Despliegue
 
 Este backend puede desplegarse en:
+
 - **Vercel** (recomendado para Next.js)
 - **Netlify**
 - **Railway**
@@ -155,4 +170,5 @@ Este backend puede desplegarse en:
 - Cualquier proveedor que soporte Node.js
 
 ### Configuración para Vercel
+
 El proyecto incluye `vercel.json` en la raíz para configuración de despliegue.

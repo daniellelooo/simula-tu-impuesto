@@ -1,13 +1,14 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { getAuthUser } from '../../../lib/middleware'
 
-// Helper para headers de CORS
+// Headers para permitir CORS en la API
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type, Authorization',
 }
 
+// Handler para preflight de CORS
 export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
@@ -15,7 +16,9 @@ export async function OPTIONS() {
   })
 }
 
+// Endpoint principal para generar el HTML del PDF
 export async function POST(request: NextRequest) {
+  // Verifica que el usuario esté autenticado
   const authUser = getAuthUser(request);
   
   if (!authUser) {
@@ -26,9 +29,10 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    // Obtiene los datos del cálculo enviados por el frontend
     const { calculationData } = await request.json();
 
-    // Generar HTML para el PDF
+    // Genera el HTML que será convertido a PDF en el frontend
     const htmlContent = `
       <!DOCTYPE html>
       <html>
@@ -127,7 +131,7 @@ export async function POST(request: NextRequest) {
       </html>
     `;
 
-    // Retornar el HTML para que el frontend lo convierta a PDF
+    // Retorna el HTML y el nombre sugerido del archivo
     return NextResponse.json({
       success: true,
       data: {

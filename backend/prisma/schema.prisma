@@ -22,6 +22,7 @@ model User {
   updatedAt DateTime @updatedAt
   
   calculations Calculation[]
+  importedSales ImportedSale[]
 }
 
 model Calculation {
@@ -39,4 +40,22 @@ model Calculation {
   createdAt         DateTime @default(now())
   
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+// Tabla para guardar datos importados desde archivos Excel
+model ImportedSale {
+  id                String   @id @default(cuid())
+  userId            String?  // Usuario que importó el archivo (opcional)
+  ventasMensuales   Float
+  tipoActividad     String
+  tiempoActividad   String
+  deducciones       Float?
+  ingresosBrutos    Float?
+  gastosDeducibles  Float?
+  fileName          String?  // Nombre del archivo Excel
+  rowNumber         Int?     // Número de fila en el Excel
+  processed         Boolean  @default(false) // Si ya se procesó o no
+  createdAt         DateTime @default(now())
+  
+  user User? @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
