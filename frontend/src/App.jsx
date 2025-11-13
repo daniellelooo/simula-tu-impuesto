@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { LogOut, User } from 'lucide-react';
-import AuthModal from './components/AuthModal';
-import AdvancedCalculator from './components/AdvancedCalculator';
-import SimpleCalculator from './components/SimpleCalculator';
+import React, { useState, useEffect } from "react";
+import { LogOut, User } from "lucide-react";
+import AuthModal from "./components/AuthModal";
+import AdvancedCalculator from "./components/AdvancedCalculator";
+import SimpleCalculator from "./components/SimpleCalculator";
 
 const App = () => {
   const [user, setUser] = useState(null);
@@ -12,9 +12,9 @@ const App = () => {
 
   // Verificar si hay un token guardado al cargar la app
   useEffect(() => {
-    const savedToken = localStorage.getItem('token');
-    const savedUser = localStorage.getItem('user');
-    
+    const savedToken = localStorage.getItem("token");
+    const savedUser = localStorage.getItem("user");
+
     if (savedToken && savedUser) {
       setToken(savedToken);
       setUser(JSON.parse(savedUser));
@@ -24,16 +24,16 @@ const App = () => {
   const handleLogin = (userData, authToken) => {
     setUser(userData);
     setToken(authToken);
-    localStorage.setItem('token', authToken);
-    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem("token", authToken);
+    localStorage.setItem("user", JSON.stringify(userData));
     setShowAuth(false);
   };
 
   const handleLogout = () => {
     setUser(null);
     setToken(null);
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
     setUseAdvanced(false);
   };
 
@@ -50,7 +50,7 @@ const App = () => {
               Calculadora de Régimen Simple de Tributación (RST)
             </p>
           </div>
-          
+
           <div className="flex items-center space-x-3">
             {user ? (
               <>
@@ -88,9 +88,9 @@ const App = () => {
             <button
               onClick={() => setUseAdvanced(false)}
               className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                !useAdvanced 
-                  ? 'bg-green-600 text-white' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                !useAdvanced
+                  ? "bg-green-600 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
               📊 Calculadora Básica
@@ -98,9 +98,9 @@ const App = () => {
             <button
               onClick={() => setUseAdvanced(true)}
               className={`px-6 py-3 rounded-lg font-medium transition-colors ${
-                useAdvanced 
-                  ? 'bg-green-600 text-white' 
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                useAdvanced
+                  ? "bg-green-600 text-white"
+                  : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
               disabled={!user}
             >
@@ -124,12 +124,12 @@ const App = () => {
               💡 ¿Qué es el RST?
             </h3>
             <p className="text-gray-600 text-sm leading-relaxed">
-              El Régimen Simple de Tributación (RST) es un sistema especial para 
-              pequeñas empresas que simplifica el pago de impuestos. Permite pagar 
-              un porcentaje fijo sobre los ingresos brutos.
+              El Régimen Simple de Tributación (RST) es un sistema especial para
+              pequeñas empresas que simplifica el pago de impuestos. Permite
+              pagar un porcentaje fijo sobre los ingresos brutos.
             </p>
           </div>
-          
+
           <div className="bg-white p-6 rounded-xl shadow-sm">
             <h3 className="text-lg font-semibold text-gray-800 mb-3">
               📈 Beneficios
@@ -146,10 +146,7 @@ const App = () => {
 
       {/* Auth Modal */}
       {showAuth && (
-        <AuthModal
-          onClose={() => setShowAuth(false)}
-          onLogin={handleLogin}
-        />
+        <AuthModal onClose={() => setShowAuth(false)} onLogin={handleLogin} />
       )}
     </div>
   );

@@ -1,0 +1,6 @@
+ventasMensuales,tipoActividad,tiempoActividad,deducciones,ingresosBrutos,gastosDeducibles
+1000000,venta_productos,1-3_años,50000,1200000,100000
+800000,servicios_personales,4-6_años,30000,850000,50000
+1500000,venta_productos,7+_años,100000,1600000,150000
+600000,venta_ambulante,1-3_años,20000,650000,30000
+2000000,otros,4-6_años,150000,2200000,200000

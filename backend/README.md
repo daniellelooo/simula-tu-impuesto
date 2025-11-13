@@ -1,98 +1,185 @@
-# 🔧 Backend - Simula tu Impuesto
+# 🔧 Backend API - Simula tu Impuesto# 🔧 Backend - Simula tu Impuesto
 
-API Next.js que proporciona los cálculos del Régimen Simple de Tributación (RST) para la aplicación frontend.
+## 📋 DescripciónAPI Next.js que proporciona los cálculos del Régimen Simple de Tributación (RST) para la aplicación frontend.
+
+Backend API REST construido con **Next.js 15** (solo API Routes, sin UI).
 
 ## 🚀 Inicio Rápido
 
-### Prerrequisitos
+## 🛠️ Stack Tecnológico
 
-- Node.js 18+
-- npm
+- **Framework**: Next.js 15 (TypeScript)### Prerrequisitos
 
-### Instalación
+- **Base de Datos**: SQLite + Prisma ORM
 
-```bash
-npm install
-```
+- **Autenticación**: JWT + bcryptjs- Node.js 18+
 
-### Desarrollo
+- **Puerto**: 3000- npm
 
-```bash
-npm run dev
-```
+## 📁 Estructura### Instalación
 
-La API estará disponible en [http://localhost:3000](http://localhost:3000)
+````
 
-### Build de Producción
+backend/```bash
 
-```bash
-npm run build
+├── prisma/npm install
+
+│   ├── schema.prisma    # Modelos de base de datos```
+
+│   └── dev.db          # Base de datos SQLite
+
+├── src/### Desarrollo
+
+│   ├── app/
+
+│   │   └── api/        # Endpoints de la API```bash
+
+│   │       ├── auth/npm run dev
+
+│   │       ├── calcular/```
+
+│   │       ├── historial/
+
+│   │       ├── pdf/La API estará disponible en [http://localhost:3000](http://localhost:3000)
+
+│   │       ├── upload-excel/
+
+│   │       └── process-batch/### Build de Producción
+
+│   └── lib/
+
+│       └── prisma.ts   # Cliente de Prisma```bash
+
+└── .env                # Variables de entornonpm run build
+
 npm run start
+
+````
+
+## 🚀 Comandos## 🛠️ Tecnologías
+
+### Desarrollo- **Next.js 15** - Framework full-stack
+
+```bash- **TypeScript** - Tipado estático
+
+npm run dev- **API Routes** - Endpoints RESTful
+
+# Servidor en http://localhost:3000- **ESLint** - Linting y calidad de código
+
 ```
-
-## 🛠️ Tecnologías
-
-- **Next.js 15** - Framework full-stack
-- **TypeScript** - Tipado estático
-- **API Routes** - Endpoints RESTful
-- **ESLint** - Linting y calidad de código
 
 ## 📁 Estructura
 
-```
-backend/
-├── pages/
-│   └── api/
-│       └── calcular.ts     # Endpoint de cálculo RST
-├── package.json            # Dependencias y scripts
-├── tsconfig.json          # Configuración TypeScript
-├── next.config.js         # Configuración Next.js
-└── README.md              # Este archivo
-```
+### Prisma (Base de datos)
 
-## 🔗 API Endpoints
+`bash`
 
-### POST `/api/calcular`
+# Generar cliente de Prismabackend/
+
+npx prisma generate├── pages/
+
+│ └── api/
+
+# Sincronizar schema con la BD│ └── calcular.ts # Endpoint de cálculo RST
+
+npx prisma db push├── package.json # Dependencias y scripts
+
+├── tsconfig.json # Configuración TypeScript
+
+# Abrir Prisma Studio (GUI)├── next.config.js # Configuración Next.js
+
+npx prisma studio└── README.md # Este archivo
+
+````
+
+
+
+## 🌐 Endpoints Disponibles## 🔗 API Endpoints
+
+
+
+### Autenticación### POST `/api/calcular`
+
+- `POST /api/auth` - Login/Registro
 
 Calcula el impuesto RST basado en los parámetros proporcionados.
 
-#### Request Body
+### Cálculos
+
+- `POST /api/calcular` - Calcular impuestos RST#### Request Body
+
+- `GET /api/historial` - Obtener historial (requiere auth)
 
 ```json
-{
-  "ventasMensuales": 5000000,
+
+### Reportes{
+
+- `POST /api/pdf` - Generar PDF (requiere auth)  "ventasMensuales": 5000000,
+
   "tipoActividad": "venta_productos",
-  "tiempoActividad": "1-3_años"
-}
-```
+
+### Importación de datos (RPA)  "tiempoActividad": "1-3_años"
+
+- `POST /api/upload-excel` - Importar ventas desde Excel/CSV}
+
+- `GET /api/upload-excel` - Listar ventas importadas (requiere auth)```
+
+- `POST /api/process-batch` - Procesar ventas en lote (requiere auth)
 
 #### Response
 
-```json
-{
-  "success": true,
-  "data": {
+## 🔑 Variables de Entorno (.env)
+
+```env```json
+
+DATABASE_URL="file:./dev.db"{
+
+JWT_SECRET="tu_secreto_super_seguro"  "success": true,
+
+```  "data": {
+
     "ventasMensuales": 5000000,
-    "ventasAnuales": 60000000,
-    "porcentajeImpuesto": 1.4,
-    "impuestoMensual": 70000,
-    "impuestoAnual": 840000
-  }
-}
-```
 
-#### Errores
+## 📊 Modelos de Base de Datos    "ventasAnuales": 60000000,
+
+    "porcentajeImpuesto": 1.4,
+
+### User    "impuestoMensual": 70000,
+
+- id, email, password (hasheado), name, createdAt    "impuestoAnual": 840000
+
+  }
+
+### Calculation}
+
+- id, userId, ventasMensuales, tipoActividad, tiempoActividad, deducciones, ingresosBrutos, gastosDeducibles, impuestoMensual, impuestoAnual, createdAt```
+
+
+
+### ImportedSale#### Errores
+
+- id, userId, ventasMensuales, tipoActividad, tiempoActividad, deducciones, ingresosBrutos, gastosDeducibles, fileName, rowNumber, processed, createdAt
 
 ```json
-{
-  "success": false,
-  "error": "Mensaje de error descriptivo"
-}
+
+## 🔒 Seguridad{
+
+- Contraseñas hasheadas con bcryptjs  "success": false,
+
+- Autenticación JWT (token válido por 7 días)  "error": "Mensaje de error descriptivo"
+
+- CORS configurado para frontend en puerto 5173}
+
 ```
 
-## 💰 Tabla de Tarifas RST
+## 📝 Notas
 
-### Venta de Productos
+- Este backend **NO tiene UI**, solo expone APIs## 💰 Tabla de Tarifas RST
+
+- La interfaz está en `/frontend` (React + Vite)
+
+- El backend se ejecuta independientemente del frontend### Venta de Productos
+
 
 - **1-3 años**: 1.4%
 - **4-6 años**: 2.8%
@@ -172,3 +259,4 @@ Este backend puede desplegarse en:
 ### Configuración para Vercel
 
 El proyecto incluye `vercel.json` en la raíz para configuración de despliegue.
+````

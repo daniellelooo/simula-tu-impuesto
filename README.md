@@ -9,12 +9,14 @@ El **Régimen Simple de Tributación** es un sistema especial diseñado por la D
 ## ✨ Características Principales
 
 ### 🔸 **Calculadora Básica** (Sin registro)
+
 - Cálculo inmediato de impuestos RST
 - Interface intuitiva y educativa
 - Cálculos locales (sin base de datos)
 - Ideal para consultas rápidas
 
 ### 🔸 **Calculadora Avanzada** (Con registro)
+
 - **Sistema de autenticación** completo
 - **Cálculos sofisticados** con deducciones y gastos
 - **Historial de cálculos** personalizado
@@ -58,11 +60,13 @@ simula-tu-impuesto/ (Monorepo Fullstack)
 ## 🚀 Inicio Rápido
 
 ### Prerrequisitos
-- **Node.js** 18+ 
+
+- **Node.js** 18+
 - **npm** 8+
 - **Git**
 
 ### Instalación Completa
+
 ```bash
 # 1. Clonar el repositorio
 git clone https://github.com/daniellelooo/simula-tu-impuesto.git
@@ -82,10 +86,12 @@ npm run dev
 ```
 
 ### URLs de Desarrollo
+
 - **Frontend**: http://localhost:5174
 - **Backend API**: http://localhost:3001
 
 ### Scripts Disponibles
+
 ```bash
 npm run dev              # 🚀 Desarrollo: Frontend + Backend
 npm run dev:frontend     # 📱 Solo frontend (Vite)
@@ -94,28 +100,31 @@ npm run build           # 📦 Build completo
 npm run build:frontend  # 📦 Build solo frontend
 npm run build:backend   # 📦 Build solo backend
 ```
+
 ## 🎯 Comparación de Funcionalidades
 
-| Característica | 📊 Calculadora Básica | 🚀 Calculadora Avanzada |
-|---------------|----------------------|-------------------------|
-| **Acceso** | Sin registro | Con registro/login |
-| **Cálculo** | Local (frontend) | Servidor + BD |
-| **Campos** | 3 básicos | 6 completos |
-| **Deducciones** | ❌ No | ✅ Sí |
-| **Gastos deducibles** | ❌ No | ✅ Sí |
-| **Historial** | ❌ No | ✅ Sí (últimos 50) |
-| **PDF** | ❌ No | ✅ Sí |
-| **Persistencia** | ❌ No | ✅ Base de datos |
-| **Uso ideal** | Consultas rápidas | Contadores/Empresarios |
+| Característica        | 📊 Calculadora Básica | 🚀 Calculadora Avanzada |
+| --------------------- | --------------------- | ----------------------- |
+| **Acceso**            | Sin registro          | Con registro/login      |
+| **Cálculo**           | Local (frontend)      | Servidor + BD           |
+| **Campos**            | 3 básicos             | 6 completos             |
+| **Deducciones**       | ❌ No                 | ✅ Sí                   |
+| **Gastos deducibles** | ❌ No                 | ✅ Sí                   |
+| **Historial**         | ❌ No                 | ✅ Sí (últimos 50)      |
+| **PDF**               | ❌ No                 | ✅ Sí                   |
+| **Persistencia**      | ❌ No                 | ✅ Base de datos        |
+| **Uso ideal**         | Consultas rápidas     | Contadores/Empresarios  |
 
 ## 📋 Campos de la Calculadora Avanzada
 
 ### 🔸 **Campos Básicos**
+
 1. **💰 Ventas Mensuales** - Ingresos brutos del negocio
 2. **🏪 Tipo de Actividad** - Venta productos, servicios, ambulante, otros
 3. **📅 Tiempo en el Negocio** - 1-3 años, 4-6 años, 7+ años
 
 ### 🔸 **Campos Avanzados**
+
 4. **💼 Ingresos Brutos** - Total de ingresos si diferentes a ventas
 5. **📋 Deducciones** - Donaciones, medicina prepagada, aportes pensión
 6. **💸 Gastos Deducibles** - Arriendos, servicios, mercancía, empleados
@@ -123,6 +132,7 @@ npm run build:backend   # 📦 Build solo backend
 ### 💡 **Ejemplo de Cálculo Avanzado**
 
 **Caso: Peluquería "Bella & Estilo"**
+
 ```javascript
 // Datos de entrada
 Ventas mensuales: $1,800,000
@@ -144,6 +154,7 @@ Ahorro: $21,000/mes 💰
 ## 🛠️ Stack Tecnológico
 
 ### 📱 **Frontend**
+
 - **React 19** - Librería de interfaz de usuario
 - **Vite** - Herramienta de desarrollo ultra-rápida
 - **Tailwind CSS** - Framework de estilos utilitarios
@@ -151,6 +162,7 @@ Ahorro: $21,000/mes 💰
 - **jsPDF + html2canvas** - Generación de PDFs
 
 ### 🔧 **Backend**
+
 - **Next.js 15** - Framework full-stack de React
 - **TypeScript** - JavaScript con tipado estático
 - **Prisma ORM** - Cliente de base de datos type-safe
@@ -159,6 +171,7 @@ Ahorro: $21,000/mes 💰
 - **jsonwebtoken** - Autenticación JWT
 
 ### 🗄️ **Base de Datos**
+
 ```sql
 -- Modelo User
 User {
@@ -170,7 +183,7 @@ User {
   calculations Calculation[]
 }
 
--- Modelo Calculation  
+-- Modelo Calculation
 Calculation {
   id                String   @id @default(cuid())
   userId            String
@@ -191,6 +204,7 @@ Calculation {
 ## ⚡ Funcionalidades Detalladas
 
 ### 🔐 **Sistema de Autenticación**
+
 - **Registro** con email, contraseña y nombre opcional
 - **Login** con validación de credenciales
 - **JWT tokens** para sesiones seguras
@@ -198,18 +212,21 @@ Calculation {
 - **Middleware** de autorización en rutas protegidas
 
 ### 🧮 **Motor de Cálculo**
+
 - **Tarifas RST actualizadas** según DIAN 2024
 - **Cálculo de base gravable** considerando deducciones
 - **Validación** de datos de entrada
 - **Formateo automático** de números con separadores de miles
 
 ### 📊 **Gestión de Historial**
+
 - **Almacenamiento automático** de todos los cálculos
 - **Visualización cronológica** (más recientes primero)
 - **Filtrado** por usuario autenticado
 - **Límite** de 50 cálculos más recientes
 
 ### 📄 **Generación de PDFs**
+
 - **Diseño profesional** con branding de la aplicación
 - **Información completa** del cálculo realizado
 - **Generación client-side** usando jsPDF
@@ -218,6 +235,7 @@ Calculation {
 ## 🔄 Flujo de Aplicación
 
 ### 📊 **Calculadora Básica**
+
 ```
 1. Usuario ingresa → Ventas, actividad, tiempo
 2. Validación → Campos requeridos
@@ -226,6 +244,7 @@ Calculation {
 ```
 
 ### � **Calculadora Avanzada**
+
 ```
 1. Autenticación → Login/registro requerido
 2. Formulario completo → 6 campos + opciones avanzadas
@@ -237,6 +256,7 @@ Calculation {
 ## 🚀 APIs Disponibles
 
 ### 🔐 **Authentication** - `/api/auth`
+
 ```javascript
 POST /api/auth
 {
@@ -248,6 +268,7 @@ POST /api/auth
 ```
 
 ### 🧮 **Calculations** - `/api/calcular`
+
 ```javascript
 POST /api/calcular
 Headers: { Authorization: "Bearer JWT_TOKEN" }
@@ -261,12 +282,16 @@ Headers: { Authorization: "Bearer JWT_TOKEN" }
 ```
 
 ### 📜 **History** - `/api/historial`
+
 ```javascript
-GET /api/historial
-Headers: { Authorization: "Bearer JWT_TOKEN" }
+GET / api / historial;
+Headers: {
+  Authorization: "Bearer JWT_TOKEN";
+}
 ```
 
 ### 📄 **PDF Generation** - `/api/pdf`
+
 ```javascript
 POST /api/pdf
 Headers: { Authorization: "Bearer JWT_TOKEN" }
@@ -274,18 +299,22 @@ Headers: { Authorization: "Bearer JWT_TOKEN" }
   "calculationData": { /* datos del cálculo */ }
 }
 ```
+
 3. **API procesa** → Cálculo de impuestos usando tarifas oficiales
 4. **Resultado mostrado** → Impuesto a pagar + detalles educativos
 
 ## 🇨🇴 Contexto del RST
 
 ### ¿Qué es el RST?
+
 El Régimen Simple de Tributación es un sistema simplificado para pequeñas empresas en Colombia que permite:
+
 - Una sola declaración que incluye múltiples impuestos
 - Tarifas progresivas según actividad y tiempo de operación
 - Simplificación de obligaciones tributarias
 
 ### Tipos de Actividad Soportados
+
 - 🛍️ **Venta de productos**
 - 👥 **Servicios personales**
 - 🚶 **Venta ambulante**
@@ -294,12 +323,14 @@ El Régimen Simple de Tributación es un sistema simplificado para pequeñas emp
 ## 🌐 Despliegue
 
 ### Producción
+
 - **Frontend**: Desplegado en Vercel
 - **Backend**: Configurable para despliegue en Vercel o similar
 
 ## 🚦 Estados de la Aplicación
 
 ### ✅ **Completado**
+
 - [x] Sistema de autenticación completo
 - [x] Calculadora básica y avanzada
 - [x] Base de datos con Prisma
@@ -310,6 +341,7 @@ El Régimen Simple de Tributación es un sistema simplificado para pequeñas emp
 - [x] Validación de formularios
 
 ### 🔄 **En Desarrollo**
+
 - [ ] Dashboard de administración
 - [ ] Exportar historial a Excel
 - [ ] Notificaciones por email
@@ -317,6 +349,7 @@ El Régimen Simple de Tributación es un sistema simplificado para pequeñas emp
 - [ ] Tema oscuro
 
 ### 🎯 **Próximas Funcionalidades**
+
 - [ ] Calculadora para otros regímenes tributarios
 - [ ] Comparación entre regímenes
 - [ ] Integración con APIs de la DIAN
@@ -325,6 +358,7 @@ El Régimen Simple de Tributación es un sistema simplificado para pequeñas emp
 ## 🔧 Configuración de Entorno
 
 ### Variables de Entorno (.env)
+
 ```bash
 # Backend
 DATABASE_URL="file:./dev.db"
@@ -333,6 +367,7 @@ NEXTAUTH_SECRET="otro_secreto_para_nextauth"
 ```
 
 ### Desarrollo Local
+
 ```bash
 # 1. Instalar dependencias
 npm install
@@ -348,6 +383,7 @@ npm run dev
 ```
 
 ### Producción
+
 ```bash
 # Build optimizado
 npm run build
@@ -360,45 +396,49 @@ JWT_SECRET="secreto_produccion"
 ## 📊 Estructura de Datos
 
 ### Tarifas RST (2024)
+
 ```javascript
 const tarifasRST = {
-  "venta_productos": {
+  venta_productos: {
     "1-3_años": 1.4,
     "4-6_años": 2.8,
     "7+_años": 4.2,
   },
-  "servicios_personales": {
+  servicios_personales: {
     "1-3_años": 1.4,
     "4-6_años": 2.8,
     "7+_años": 4.2,
   },
-  "venta_ambulante": {
+  venta_ambulante: {
     "1-3_años": 1.0,
     "4-6_años": 2.0,
     "7+_años": 3.0,
   },
-  "otros": {
+  otros: {
     "1-3_años": 1.4,
     "4-6_años": 2.8,
     "7+_años": 4.2,
-  }
+  },
 };
 ```
 
 ## 🌐 Despliegue
 
 ### Vercel (Recomendado)
+
 ```bash
 # Conectar con GitHub y desplegar automáticamente
 vercel --prod
 ```
 
 ### Variables de Entorno en Vercel
+
 - `DATABASE_URL` - URL de PostgreSQL
 - `JWT_SECRET` - Secreto para JWT
 - `NEXTAUTH_SECRET` - Secreto para NextAuth
 
 ### URLs de Producción
+
 - **Demo**: [simula-tu-impuesto.vercel.app](https://simula-tu-impuesto.vercel.app)
 
 ## 🛠️ Troubleshooting
@@ -406,6 +446,7 @@ vercel --prod
 ### Problemas Comunes
 
 #### **Error de CORS**
+
 ```bash
 # Verificar que el backend esté ejecutándose
 npm run dev:backend
@@ -414,6 +455,7 @@ npm run dev:backend
 ```
 
 #### **Error de Base de Datos**
+
 ```bash
 # Regenerar el cliente Prisma
 cd backend
@@ -422,6 +464,7 @@ npx prisma db push
 ```
 
 #### **Error de Autenticación**
+
 ```bash
 # Verificar JWT_SECRET en .env
 # Limpiar localStorage del navegador
@@ -429,23 +472,26 @@ localStorage.clear()
 ```
 
 ### Logs de Desarrollo
+
 ```bash
 # Ver logs del backend
 cd backend && npm run dev
 
-# Ver logs del frontend  
+# Ver logs del frontend
 cd frontend && npm run dev
 ```
 
 ## 📚 Recursos Adicionales
 
 ### 📖 **Documentación Oficial**
+
 - [DIAN - Régimen Simple](https://www.dian.gov.co/normatividad/Normatividad/Decreto%202550%20de%202022.pdf)
 - [React 19 Docs](https://react.dev/)
 - [Next.js 15 Docs](https://nextjs.org/docs)
 - [Prisma Docs](https://www.prisma.io/docs)
 
 ### 🎓 **Para Aprender Más**
+
 - **RST en Colombia**: Conoce los requisitos y beneficios
 - **React Development**: Mejores prácticas y patrones
 - **Next.js Full-Stack**: APIs y deployment
@@ -454,6 +500,7 @@ cd frontend && npm run dev
 ## 🤝 Contribución
 
 ### Cómo Contribuir
+
 1. **Fork** el repositorio
 2. **Crea** una rama feature (`git checkout -b feature/nueva-funcionalidad`)
 3. **Commit** tus cambios (`git commit -m 'Agregar nueva funcionalidad'`)
@@ -461,12 +508,14 @@ cd frontend && npm run dev
 5. **Abre** un Pull Request
 
 ### Guidelines
+
 - Código limpio y comentado
 - Tests para nuevas funcionalidades
 - Documentación actualizada
 - Respeto por la arquitectura existente
 
 ### Issues y Bugs
+
 - Reporta bugs usando GitHub Issues
 - Incluye pasos para reproducir
 - Especifica navegador y versión
@@ -481,6 +530,7 @@ Este proyecto está bajo la **Licencia MIT** - ver el archivo [LICENSE](LICENSE)
 **Daniel Leal** - [@daniellelooo](https://github.com/daniellelooo)
 
 ### 🌟 Agradecimientos
+
 - **DIAN** por la documentación oficial del RST
 - **Comunidad React** por las herramientas increíbles
 - **Vercel** por el hosting gratuito

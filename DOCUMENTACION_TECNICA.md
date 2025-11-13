@@ -1,768 +1,747 @@
-# 📋 Documentación Técnica - Simula tu Impuesto
+# 📋 Documentación Técnica - Simula tu Impuesto# 📋 Documentación Técnica - Simula tu Impuesto
 
-## 🎯 Resumen Ejecutivo
 
-**Simula tu Impuesto** es una aplicación web fullstack que permite calcular el Régimen Simple de Tributación (RST) colombiano. Desarrollada con una arquitectura moderna de monorepo, combina React en el frontend y Next.js en el backend para ofrecer tanto cálculos básicos como funcionalidades avanzadas con autenticación y persistencia de datos.
 
----
+## 🎯 Resumen Ejecutivo## 🎯 Resumen Ejecutivo
 
-## 🏗️ Arquitectura General
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     MONOREPO STRUCTURE                      │
-├─────────────────────────────────────────────────────────────┤
-│  Frontend (React + Vite)    │    Backend (Next.js + API)    │
-│  Puerto: 5174               │    Puerto: 3000               │
-│                             │                               │
-│  ┌─────────────────────┐    │    ┌─────────────────────┐    │
-│  │   React Components  │◄───┼────┤   API Routes       │    │
-│  │   - AuthModal       │    │    │   - /api/auth       │    │
-│  │   - SimpleCalc      │    │    │   - /api/calcular   │    │
-│  │   - AdvancedCalc    │    │    │   - /api/historial  │    │
-│  │   - App.jsx         │    │    │   - /api/pdf        │    │
-│  └─────────────────────┘    │    └─────────────────────┘    │
-│                             │                               │
-│  ┌─────────────────────┐    │    ┌─────────────────────┐    │
-│  │   State Management  │    │    │   Database Layer    │    │
-│  │   - useState        │    │    │   - Prisma ORM      │    │
-│  │   - localStorage    │    │    │   - SQLite (dev)    │    │
-│  └─────────────────────┘    │    │   - PostgreSQL(prod)│    │
-│                             │    └─────────────────────┘    │
-└─────────────────────────────────────────────────────────────┘
-```
 
----
+**Simula tu Impuesto** es una aplicación web fullstack que permite calcular el Régimen Simple de Tributación (RST) colombiano. Utiliza una arquitectura separada de frontend y backend, ofreciendo cálculos básicos instantáneos y funcionalidades avanzadas con autenticación y persistencia de datos.**Simula tu Impuesto** es una aplicación web fullstack que permite calcular el Régimen Simple de Tributación (RST) colombiano. Utiliza una arquitectura separada de frontend y backend, ofreciendo cálculos básicos instantáneos y funcionalidades avanzadas con autenticación y persistencia de datos.
 
-## 🎨 FRONTEND - Análisis Detallado
 
-### 📦 Stack Tecnológico
 
-| Tecnología | Versión | Propósito |
-|------------|---------|-----------|
-| **React** | 19.x | Librería de UI con hooks modernos |
-| **Vite** | 7.x | Build tool ultra-rápido |
-| **Tailwind CSS** | 3.x | Framework de estilos utilitarios |
-| **Lucide React** | Latest | Iconografía SVG optimizada |
-| **jsPDF** | Latest | Generación de PDFs client-side |
-| **html2canvas** | Latest | Captura de elementos DOM |
+------
 
-### 🗂️ Estructura de Componentes
 
-```
-frontend/src/
-├── components/
-│   ├── AuthModal.jsx          # Autenticación y registro
-│   ├── SimpleCalculator.jsx   # Calculadora básica (sin auth)
-│   └── AdvancedCalculator.jsx # Calculadora avanzada (con auth)
-├── App.jsx                    # Componente raíz y routing
-├── main.jsx                   # Punto de entrada de React
-└── index.css                  # Estilos globales + Tailwind
-```
 
-### 🔍 Componentes Principales
+## 🏗️ Arquitectura General## 🏗️ Arquitectura General
 
-#### **1. App.jsx - Componente Raíz**
-```javascript
-// Responsabilidades principales:
-const App = () => {
-  // 🔐 Gestión de autenticación
-  const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
-  
-  // 🎯 Control de modo de calculadora
-  const [useAdvanced, setUseAdvanced] = useState(false);
-  
-  // 🔄 Persistencia en localStorage
-  useEffect(() => {
-    const savedToken = localStorage.getItem('token');
-    const savedUser = localStorage.getItem('user');
-    // Restaurar sesión automáticamente
-  }, []);
-  
-  // 🎨 Renderizado condicional
-  return (
-    <div>
-      {/* Header con estado de autenticación */}
-      {/* Toggle entre calculadoras */}
-      {useAdvanced ? <AdvancedCalculator /> : <SimpleCalculator />}
-      {/* Modal de autenticación */}
-    </div>
-  );
-};
-```
 
-**Características técnicas:**
-- **State Management**: useState para estado local
-- **Persistencia**: localStorage para JWT y datos de usuario
-- **Routing Condicional**: Sin react-router, usa estado local
-- **Responsive Design**: Tailwind CSS con breakpoints
 
-#### **2. AuthModal.jsx - Autenticación**
-```javascript
-const AuthModal = ({ onClose, onLogin }) => {
-  // 🔄 Dual mode: Login/Register
-  const [isLogin, setIsLogin] = useState(true);
-  
-  // 📡 API Communication
-  const handleSubmit = async (e) => {
-    const response = await fetch(`${API_BASE_URL}/api/auth`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        action: isLogin ? 'login' : 'register',
-        ...formData
-      })
-    });
-    
-    if (data.success) {
-      // 💾 Guardar token y usuario
-      localStorage.setItem('token', data.data.token);
-      localStorage.setItem('user', JSON.stringify(data.data.user));
-      onLogin(data.data.user, data.data.token);
-    }
-  };
-};
-```
+La aplicación está dividida en dos partes independientes que se comunican mediante API REST:La aplicación está dividida en dos partes independientes que se comunican mediante API REST:
 
-**Flujo de autenticación:**
-1. Usuario completa formulario
-2. Validación client-side
-3. Petición POST a `/api/auth`
-4. Recepción de JWT token
-5. Almacenamiento en localStorage
-6. Actualización de estado global
-7. Cierre de modal
 
-#### **3. SimpleCalculator.jsx - Cálculo Básico**
-```javascript
-// 🧮 Cálculos locales (sin backend)
-const SimpleCalculator = () => {
-  // 📊 Tabla de tarifas RST hardcodeada
-  const tarifasRST = {
-    "venta_productos": {
-      "1-3_años": 0.008,
-      "4-6_años": 0.012,
-      "7+_años": 0.016,
-    }
-    // ... más tipos de actividad
-  };
-  
-  // ⚡ Cálculo instantáneo
-  const calcularImpuestos = () => {
-    const tarifa = tarifasRST[tipoActividad][tiempoActividad];
-    const impuestoMensual = ingresosMensuales * tarifa;
-    setResultado({
-      impuestoMensual,
-      impuestoAnual: impuestoMensual * 12,
-      // ... más resultados
-    });
-  };
-};
-```
 
-**Ventajas del cálculo local:**
-- ⚡ **Velocidad**: Sin latencia de red
-- 🔒 **Privacidad**: Los datos no salen del navegador
-- 📱 **Offline**: Funciona sin conexión
-- 🎯 **Simplicidad**: Ideal para consultas rápidas
+``````
 
-#### **4. AdvancedCalculator.jsx - Cálculo Avanzado**
-```javascript
-const AdvancedCalculator = ({ user, token }) => {
-  // 📋 Campos adicionales para cálculos complejos
-  const [formData, setFormData] = useState({
-    ventasMensuales: '',
-    tipoActividad: 'venta_productos',
-    tiempoActividad: '1-3_años',
-    deducciones: '',           // 🆕 Campo avanzado
-    ingresosBrutos: '',        // 🆕 Campo avanzado
-    gastosDeducibles: ''       // 🆕 Campo avanzado
-  });
-  
-  // 🔐 Cálculo autenticado en backend
-  const calcularImpuestos = async () => {
-    const response = await fetch(`${API_BASE_URL}/api/calcular`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`  // 🔑 JWT Auth
-      },
-      body: JSON.stringify(calculationData)
-    });
-  };
-  
-  // 📜 Historial de cálculos
-  const obtenerHistorial = useCallback(async () => {
-    const response = await fetch(`${API_BASE_URL}/api/historial`, {
-      headers: { 'Authorization': `Bearer ${token}` }
-    });
-  }, [token]);
-  
-  // 📄 Generación de PDFs
-  const descargarPDF = async () => {
-    // 1. Solicitar HTML del backend
-    const response = await fetch(`${API_BASE_URL}/api/pdf`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify({ calculationData: resultado })
-    });
-    
-    // 2. Renderizar HTML en elemento temporal
-    const tempDiv = document.createElement('div');
-    tempDiv.innerHTML = data.data.htmlContent;
-    document.body.appendChild(tempDiv);
-    
-    // 3. Capturar con html2canvas
-    const canvas = await html2canvas(tempDiv, {
-      scale: 2,
-      useCORS: true,
-      allowTaint: true
-    });
-    
-    // 4. Generar PDF con jsPDF
-    const pdf = new jsPDF('p', 'mm', 'a4');
-    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, width, height);
-    pdf.save(filename);
-  };
-};
-```
+┌──────────────────────┐          HTTP/JSON          ┌──────────────────────┐┌──────────────────────┐          HTTP/JSON          ┌──────────────────────┐
 
-### 🎨 Sistema de Estilos
+│                      │   ──────────────────────►   │                      ││                      │   ──────────────────────►   │                      │
 
-**Tailwind CSS Configuration:**
-```javascript
-// tailwind.config.js
-module.exports = {
-  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
-  theme: {
-    extend: {
-      colors: {
-        primary: {
-          50: '#f0fdf4',
-          600: '#16a34a',
-          700: '#15803d'
-        }
-      }
-    }
-  }
-}
-```
+│   FRONTEND           │                             │   BACKEND            ││   FRONTEND           │                             │   BACKEND            │
 
-**Patrones de diseño utilizados:**
-- **Card Pattern**: `.card` para contenedores principales
-- **Gradient Backgrounds**: `bg-gradient-to-br` para efectos visuales
-- **Responsive Grid**: `grid md:grid-cols-3` para layouts adaptativos
-- **State-based Styling**: Clases condicionales con template literals
+│   React + Vite       │   ◄──────────────────────   │   Next.js API        ││   React + Vite       │   ◄──────────────────────   │   Next.js API        │
 
-### 🔗 Comunicación con Backend
+│   Puerto: 5173       │                             │   Puerto: 3000       ││   Puerto: 5173       │                             │   Puerto: 3000       │
 
-**Configuración de Environment:**
-```javascript
-// Uso de variables de entorno Vite
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-// .env: VITE_API_BASE_URL=http://localhost:3000
-```
+│                      │                             │                      ││                      │                             │                      │
 
-**Patrones de Fetch:**
-```javascript
-// Patrón estándar para todas las peticiones
-const makeAuthenticatedRequest = async (endpoint, options = {}) => {
-  const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${token}`,
-      ...options.headers
-    },
-    ...options
-  });
-  
-  if (!response.ok) {
-    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-  }
-  
-  return response.json();
-};
-```
+└──────────────────────┘                             └──────────────────────┘└──────────────────────┘                             └──────────────────────┘
+
+         │                                                      │         │                                                      │
+
+         │                                                      │         │                                                      │
+
+         ▼                                                      ▼         ▼                                                      ▼
+
+  localStorage (JWT)                                    SQLite Database  localStorage (JWT)                                    SQLite Database
+
+``````
+
+
+
+------
+
+
+
+## 🎨 FRONTEND## 🎨 FRONTEND
+
+
+
+### 📦 Stack Tecnológico### 📦 Stack Tecnológico
+
+
+
+| Tecnología       | Propósito                              || Tecnología       | Propósito                             |
+
+| ---------------- | -------------------------------------- || ---------------- | ------------------------------------- |
+
+| **React 19**     | Librería de interfaz de usuario        || **React 19**     | Librería de interfaz de usuario       |
+
+| **Vite**         | Herramienta de desarrollo rápida       || **Vite**         | Herramienta de desarrollo rápida      |
+
+| **Tailwind CSS** | Framework de estilos                   || **Tailwind CSS** | Framework de estilos                  |
+
+| **Lucide React** | Librería de iconos                     || **Lucide React** | Librería de iconos                    |
+
+| **jsPDF**        | Generación de PDFs                     || **jsPDF**        | Generación de PDFs                    |
+
+| **html2canvas**  | Captura de elementos HTML como imagen  || **html2canvas**  | Captura de elementos HTML como imagen |
+
+
+
+**Puerto:** `5173`  **Puerto:** `5173`  
+
+**URL de desarrollo:** `http://localhost:5173`**URL de desarrollo:** `http://localhost:5173`
+
+
+
+### 🧩 Componentes Principales### 🧩 Componentes Principales
+
+
+
+#### **App.jsx**#### **App.jsx**
+
+- Componente raíz de la aplicación
+
+- Gestiona el estado de autenticación (usuario y token JWT)- Componente raíz de la aplicación
+
+- Controla qué calculadora mostrar (básica o avanzada)- Gestiona el estado de autenticación (usuario y token JWT)
+
+- Maneja la persistencia de sesión mediante localStorage- Controla qué calculadora mostrar (básica o avanzada)
+
+- Maneja la persistencia de sesión mediante localStorage
+
+#### **AuthModal.jsx**
+
+- Modal de login y registro#### **AuthModal.jsx**
+
+- Alterna entre modo login y registro
+
+- Envía credenciales al backend- Modal de login y registro
+
+- Almacena el token JWT recibido en localStorage- Alterna entre modo login y registro
+
+- Envía credenciales al backend
+
+#### **SimpleCalculator.jsx**- Almacena el token JWT recibido en localStorage
+
+- Calculadora básica que funciona completamente en el navegador
+
+- No requiere autenticación#### **SimpleCalculator.jsx**
+
+- Realiza cálculos instantáneos usando tarifas RST predefinidas
+
+- Ideal para consultas rápidas sin guardar datos- Calculadora básica que funciona completamente en el navegador
+
+- No requiere autenticación
+
+#### **AdvancedCalculator.jsx**- Realiza cálculos instantáneos usando tarifas RST predefinidas
+
+- Calculadora avanzada con funcionalidades completas- Ideal para consultas rápidas sin guardar datos
+
+- Requiere autenticación
+
+- Permite agregar deducciones y gastos deducibles#### **AdvancedCalculator.jsx**
+
+- Guarda cálculos en la base de datos
+
+- Muestra historial de cálculos anteriores- Calculadora avanzada con funcionalidades completas
+
+- Genera reportes en PDF- Requiere autenticación
+
+- Permite agregar deducciones y gastos deducibles
+
+### 🔄 Comunicación con el Backend- Guarda cálculos en la base de datos
+
+- Muestra historial de cálculos anteriores
+
+El frontend se comunica con el backend mediante:- Genera reportes en PDF
+
+
+
+- **Protocolo:** HTTP/JSON### � Comunicación con el Backend
+
+- **Método de autenticación:** JWT Bearer Token en header Authorization
+
+- **Variable de entorno:** `VITE_API_BASE_URL=http://localhost:3000`El frontend se comunica con el backend mediante:
+
+
+
+**Flujo de autenticación:**- **Protocolo:** HTTP/JSON
+
+1. Usuario ingresa credenciales en AuthModal- **Método de autenticación:** JWT Bearer Token en header Authorization
+
+2. Se envía petición POST a `/api/auth`- **Variable de entorno:** `VITE_API_BASE_URL=http://localhost:3000`
+
+3. Backend valida y retorna token JWT
+
+4. Token se almacena en localStorage**Flujo de autenticación:**
+
+5. Token se incluye en todas las peticiones autenticadas
+
+1. Usuario ingresa credenciales en AuthModal
+
+### 🎨 Estilos2. Se envía petición POST a `/api/auth`
+
+3. Backend valida y retorna token JWT
+
+**Tailwind CSS** se utiliza para todos los estilos con:4. Token se almacena en localStorage
+
+- Diseño responsivo (mobile-first)5. Token se incluye en todas las peticiones autenticadas
+
+- Paleta de colores verde (tema fiscal)
+
+- Cards y sombras para jerarquía visual### 🎨 Estilos
+
+- Transiciones suaves para mejor UX
+
+**Tailwind CSS** se utiliza para todos los estilos con:
 
 ---
 
-## ⚙️ BACKEND - Análisis Detallado
+- Diseño responsivo (mobile-first)
 
-### 📦 Stack Tecnológico
+## ⚙️ BACKEND- Paleta de colores verde (tema fiscal)
 
-| Tecnología | Versión | Propósito |
-|------------|---------|-----------|
-| **Next.js** | 15.x | Framework full-stack con API Routes |
-| **TypeScript** | 5.x | Tipado estático para mayor robustez |
-| **Prisma** | 5.x | ORM type-safe para base de datos |
-| **SQLite** | 3.x | Base de datos de desarrollo |
-| **PostgreSQL** | 14+ | Base de datos de producción |
-| **bcryptjs** | 2.x | Hashing seguro de contraseñas |
-| **jsonwebtoken** | 9.x | Generación y verificación de JWT |
+- Cards y sombras para jerarquía visual
 
-### 🗂️ Estructura del Backend
+### 📦 Stack Tecnológico- Transiciones suaves para mejor UX
 
-```
-backend/src/
-├── app/api/                   # API Routes de Next.js
-│   ├── auth/route.ts         # Autenticación (login/register)
-│   ├── calcular/route.ts     # Cálculos avanzados
-│   ├── historial/route.ts    # Historial de cálculos
-│   └── pdf/route.ts          # Generación de reportes
-├── lib/                      # Utilidades y configuraciones
-│   ├── prisma.ts            # Cliente de base de datos
-│   ├── auth.ts              # Funciones de autenticación
-│   └── middleware.ts        # Middleware de autorización
-└── prisma/
-    └── schema.prisma        # Esquema de base de datos
-```
 
-### 🗄️ Modelo de Base de Datos
 
-```prisma
-// prisma/schema.prisma
-model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  password  String   // Hash bcrypt
-  name      String?
-  createdAt DateTime @default(now())
-  
-  // Relación uno-a-muchos
-  calculations Calculation[]
-  
-  @@map("users")
-}
+| Tecnología       | Propósito                           |---
 
-model Calculation {
-  id                 String   @id @default(cuid())
-  userId             String
-  ventasMensuales    Float
-  tipoActividad      String
-  tiempoActividad    String
-  porcentajeImpuesto Float
-  impuestoMensual    Float
-  impuestoAnual      Float
-  
-  // Campos avanzados (opcionales)
-  deducciones        Float?
-  ingresosBrutos     Float?
-  gastosDeducibles   Float?
-  baseGravable       Float?
-  
-  createdAt DateTime @default(now())
-  
-  // Relación con User
-  user User @relation(fields: [userId], references: [id])
-  
-  @@map("calculations")
-}
-```
+| ---------------- | ----------------------------------- |
 
-**Características del modelo:**
-- **CUID**: Identificadores únicos y seguros
-- **Índices**: Email único para usuarios
-- **Relaciones**: Foreign key con CASCADE
-- **Timestamps**: Tracking automático de creación
-- **Campos opcionales**: Flexibilidad para cálculos básicos/avanzados
+| **Next.js 15**   | Framework para API REST             |## ⚙️ BACKEND
 
-### 🔐 Sistema de Autenticación
+| **TypeScript**   | Tipado estático                     |
 
-#### **1. Hash de Contraseñas**
-```typescript
-// lib/auth.ts
-import bcrypt from 'bcryptjs';
+| **Prisma ORM**   | Manejo de base de datos type-safe   |### 📦 Stack Tecnológico
 
-export const hashPassword = async (password: string): Promise<string> => {
-  const saltRounds = 12; // Alto nivel de seguridad
-  return await bcrypt.hash(password, saltRounds);
-};
+| **SQLite**       | Base de datos (desarrollo)          |
 
-export const comparePassword = async (
-  password: string, 
-  hash: string
-): Promise<boolean> => {
-  return await bcrypt.compare(password, hash);
-};
-```
+| **bcryptjs**     | Encriptación de contraseñas         || Tecnología       | Propósito                         |
 
-#### **2. JWT Token Management**
-```typescript
-import jwt from 'jsonwebtoken';
+| **jsonwebtoken** | Autenticación JWT                   || ---------------- | --------------------------------- |
 
-export const generateToken = (userId: string): string => {
-  return jwt.sign(
-    { userId },
-    process.env.JWT_SECRET!,
-    { 
-      expiresIn: '7d',      // Token válido por 7 días
-      algorithm: 'HS256'    // Algoritmo estándar
-    }
-  );
-};
+| **Next.js 15**   | Framework para API REST           |
 
-export const verifyToken = (token: string) => {
-  try {
-    return jwt.verify(token, process.env.JWT_SECRET!);
-  } catch (error) {
-    throw new Error('Token inválido');
-  }
-};
-```
+**Puerto:** `3000`  | **TypeScript**   | Tipado estático                   |
 
-#### **3. Middleware de Autorización**
-```typescript
-// lib/middleware.ts
-export const getAuthUser = (request: NextRequest) => {
-  const authHeader = request.headers.get('Authorization');
-  
-  if (!authHeader?.startsWith('Bearer ')) {
-    return null;
-  }
-  
-  const token = authHeader.substring(7);
-  
-  try {
-    const decoded = verifyToken(token);
-    return decoded as { userId: string };
-  } catch {
-    return null;
-  }
-};
-```
+**URL de desarrollo:** `http://localhost:3000`| **Prisma ORM**   | Manejo de base de datos type-safe |
 
-### 🚀 API Routes Detalladas
+| **SQLite**       | Base de datos (desarrollo)        |
 
-#### **1. /api/auth - Autenticación**
-```typescript
-export async function POST(request: NextRequest) {
-  const { action, email, password, name } = await request.json();
-  
-  if (action === 'register') {
-    // 1. Verificar si el usuario existe
-    const existingUser = await prisma.user.findUnique({
-      where: { email }
-    });
-    
-    if (existingUser) {
-      return NextResponse.json(
-        { success: false, error: 'El usuario ya existe' },
-        { status: 400 }
-      );
-    }
-    
-    // 2. Hash de la contraseña
-    const hashedPassword = await hashPassword(password);
-    
-    // 3. Crear usuario en la base de datos
-    const user = await prisma.user.create({
-      data: {
-        email,
-        password: hashedPassword,
-        name
-      }
-    });
-    
-    // 4. Generar JWT token
-    const token = generateToken(user.id);
-    
-    // 5. Respuesta exitosa
-    return NextResponse.json({
-      success: true,
-      data: {
-        user: { id: user.id, email: user.email, name: user.name },
-        token
-      }
-    });
-    
-  } else if (action === 'login') {
-    // Proceso similar para login con validación de contraseña
-  }
-}
-```
+### 🗄️ Base de Datos| **bcryptjs**     | Encriptación de contraseñas       |
 
-#### **2. /api/calcular - Cálculos Avanzados**
-```typescript
-export async function POST(request: NextRequest) {
-  // 1. Autenticación (opcional para cálculos básicos)
-  const authUser = getAuthUser(request);
-  
-  const {
-    ventasMensuales,
-    tipoActividad,
-    tiempoActividad,
-    deducciones = 0,
-    ingresosBrutos = 0,
-    gastosDeducibles = 0
-  } = await request.json();
-  
-  // 2. Motor de cálculo RST
-  const tarifasRST = {
-    'venta_productos': {
-      '1-3_años': 1.4,
-      '4-6_años': 2.8,
-      '7+_años': 4.2
-    },
-    // ... más tipos de actividad
-  };
-  
-  // 3. Cálculo de base gravable
-  const ingresosTotales = ingresosBrutos || ventasMensuales;
-  const baseGravable = Math.max(0, ingresosTotales - gastosDeducibles - deducciones);
-  
-  // 4. Aplicación de tarifa RST
-  const porcentajeImpuesto = tarifasRST[tipoActividad][tiempoActividad];
-  const impuestoMensual = (baseGravable * porcentajeImpuesto) / 100;
-  
-  const resultado = {
-    ventasMensuales,
-    ventasAnuales: ventasMensuales * 12,
-    baseGravable,
-    porcentajeImpuesto,
-    impuestoMensual,
-    impuestoAnual: impuestoMensual * 12,
-    deducciones,
-    gastosDeducibles
-  };
-  
-  // 5. Guardar en BD si el usuario está autenticado
-  if (authUser) {
-    await prisma.calculation.create({
-      data: {
-        userId: authUser.userId,
-        ...resultado
-      }
-    });
-  }
-  
-  return NextResponse.json({
-    success: true,
-    data: resultado
-  });
-}
-```
+| **jsonwebtoken** | Autenticación JWT                 |
 
-#### **3. /api/historial - Gestión de Historial**
-```typescript
-export async function GET(request: NextRequest) {
-  // 1. Verificar autenticación (requerida)
-  const authUser = getAuthUser(request);
-  
-  if (!authUser) {
-    return NextResponse.json(
-      { success: false, error: 'No autorizado' },
-      { status: 401 }
-    );
-  }
-  
-  // 2. Consultar cálculos del usuario
-  const calculations = await prisma.calculation.findMany({
-    where: { userId: authUser.userId },
-    orderBy: { createdAt: 'desc' },
-    take: 50 // Límite de 50 registros más recientes
-  });
-  
-  return NextResponse.json({
-    success: true,
-    data: calculations
-  });
-}
-```
+**Modelos principales:**
 
-#### **4. /api/pdf - Generación de Reportes**
-```typescript
-export async function POST(request: NextRequest) {
-  const authUser = getAuthUser(request);
-  
-  if (!authUser) {
-    return NextResponse.json(
-      { success: false, error: 'No autorizado' },
-      { status: 401 }
-    );
-  }
-  
-  const { calculationData } = await request.json();
-  
-  // Generar HTML estructurado para PDF
-  const htmlContent = `
-    <!DOCTYPE html>
-    <html>
-    <head>
-      <style>
-        body { font-family: Arial, sans-serif; }
-        .header { background: #16a34a; color: white; padding: 20px; }
-        .content { padding: 20px; }
-        .result { font-size: 24px; font-weight: bold; color: #16a34a; }
-      </style>
-    </head>
-    <body>
-      <div class="header">
-        <h1>🧮 Simula tu Impuesto - Reporte RST</h1>
-      </div>
-      <div class="content">
-        <h2>Resultados del Cálculo</h2>
-        <p class="result">Impuesto Mensual: ${formatCurrency(calculationData.impuestoMensual)}</p>
-        <p>Tarifa aplicada: ${calculationData.porcentajeImpuesto}%</p>
-        <p>Base gravable: ${formatCurrency(calculationData.baseGravable)}</p>
-        <!-- Más detalles del cálculo -->
-      </div>
-    </body>
-    </html>
-  `;
-  
-  return NextResponse.json({
-    success: true,
-    data: {
-      htmlContent,
-      filename: `calculo-rst-${new Date().toISOString().split('T')[0]}.pdf`
-    }
-  });
-}
-```
+**Puerto:** `3000`  
 
-### 🔒 Seguridad Implementada
+#### **User (Usuarios)****URL de desarrollo:** `http://localhost:3000`
 
-1. **CORS Headers**: Configuración para permitir requests del frontend
-2. **JWT Validation**: Verificación de tokens en rutas protegidas
-3. **Password Hashing**: bcrypt con salt rounds altos
-4. **Input Validation**: Validación de tipos y rangos
-5. **Error Handling**: Manejo seguro sin exponer información sensible
+- ID único
 
----
+- Email (único)### 🗄️ Base de Datos
 
-## 🔗 CONEXIÓN FRONTEND-BACKEND
+- Password (hasheada con bcrypt)
 
-### 📡 Protocolos de Comunicación
+- Nombre (opcional)**Modelos principales:**
 
-#### **1. Autenticación Flow**
-```mermaid
+- Fecha de creación
+
+#### **User (Usuarios)**
+
+#### **Calculation (Cálculos)**
+
+- ID único- ID único
+
+- ID del usuario (relación con User)- Email (único)
+
+- Ventas mensuales- Password (hasheada con bcrypt)
+
+- Tipo de actividad- Nombre (opcional)
+
+- Tiempo de actividad- Fecha de creación
+
+- Porcentaje de impuesto aplicado
+
+- Impuesto mensual calculado#### **Calculation (Cálculos)**
+
+- Impuesto anual calculado
+
+- Deducciones (opcional)- ID único
+
+- Ingresos brutos (opcional)- ID del usuario (relación con User)
+
+- Gastos deducibles (opcional)- Ventas mensuales
+
+- Base gravable (opcional)- Tipo de actividad
+
+- Fecha de creación- Tiempo de actividad
+
+- Porcentaje de impuesto aplicado
+
+#### **ImportedSale (Ventas Importadas - RPA)**- Impuesto mensual calculado
+
+- ID único- Impuesto anual calculado
+
+- ID del usuario- Deducciones (opcional)
+
+- Datos de venta (ventas, tipo, tiempo, etc.)- Ingresos brutos (opcional)
+
+- Nombre del archivo- Gastos deducibles (opcional)
+
+- Número de fila- Base gravable (opcional)
+
+- Estado de procesamiento- Fecha de creación
+
+- Fecha de creación
+
+#### **ImportedSale (Ventas Importadas - RPA)**
+
+### 🔐 Seguridad
+
+- ID único
+
+**Sistema de autenticación:**- ID del usuario
+
+- Contraseñas hasheadas con **bcryptjs** (12 salt rounds)- Datos de venta (ventas, tipo, tiempo, etc.)
+
+- Tokens **JWT** con expiración de 7 días- Nombre del archivo
+
+- Middleware de autorización para rutas protegidas- Número de fila
+
+- CORS configurado para el frontend- Estado de procesamiento
+
+- Fecha de creación
+
+### 🌐 Endpoints (API REST)
+
+### 🔐 Seguridad
+
+#### **POST /api/auth**
+
+**Autenticación y registro de usuarios****Sistema de autenticación:**
+
+- **Body:** `{ action: "login" | "register", email, password, name? }`
+
+- **Respuesta:** `{ success: true, data: { user, token } }`- Contraseñas hasheadas con **bcryptjs** (12 salt rounds)
+
+- **Funcionalidad:**- Tokens **JWT** con expiración de 7 días
+
+  - Registro: Valida email único, hashea contraseña, crea usuario, genera token- Middleware de autorización para rutas protegidas
+
+  - Login: Valida credenciales, genera token JWT- CORS configurado para el frontend
+
+
+
+#### **POST /api/calcular**### 🌐 Endpoints (API REST)
+
+**Cálculo de impuestos RST**
+
+- **Body:** `{ ventasMensuales, tipoActividad, tiempoActividad, deducciones?, ingresosBrutos?, gastosDeducibles? }`#### **POST /api/auth**
+
+- **Headers:** `Authorization: Bearer [token]` (opcional)
+
+- **Respuesta:** `{ success: true, data: { impuestoMensual, impuestoAnual, porcentajeImpuesto, ... } }`**Autenticación y registro de usuarios**
+
+- **Funcionalidad:**
+
+  - Aplica tarifas RST según tipo y tiempo de actividad- **Body:** `{ action: "login" | "register", email, password, name? }`
+
+  - Calcula base gravable restando deducciones y gastos- **Respuesta:** `{ success: true, data: { user, token } }`
+
+  - Guarda en BD si el usuario está autenticado- **Funcionalidad:**
+
+  - Registro: Valida email único, hashea contraseña, crea usuario, genera token
+
+#### **GET /api/historial**  - Login: Valida credenciales, genera token JWT
+
+**Obtener historial de cálculos**
+
+- **Headers:** `Authorization: Bearer [token]` (requerido)#### **POST /api/calcular**
+
+- **Respuesta:** `{ success: true, data: [calculations...] }`
+
+- **Funcionalidad:****Cálculo de impuestos RST**
+
+  - Retorna últimos 50 cálculos del usuario ordenados por fecha
+
+- **Body:** `{ ventasMensuales, tipoActividad, tiempoActividad, deducciones?, ingresosBrutos?, gastosDeducibles? }`
+
+#### **POST /api/pdf**- **Headers:** `Authorization: Bearer [token]` (opcional)
+
+**Generar reporte en PDF**- **Respuesta:** `{ success: true, data: { impuestoMensual, impuestoAnual, porcentajeImpuesto, ... } }`
+
+- **Headers:** `Authorization: Bearer [token]` (requerido)- **Funcionalidad:**
+
+- **Body:** `{ calculationData: {...} }`  - Aplica tarifas RST según tipo y tiempo de actividad
+
+- **Respuesta:** `{ success: true, data: { htmlContent, filename } }`  - Calcula base gravable restando deducciones y gastos
+
+- **Funcionalidad:**  - Guarda en BD si el usuario está autenticado
+
+  - Genera HTML estructurado con los datos del cálculo
+
+  - Frontend renderiza HTML y lo convierte a PDF#### **GET /api/historial**
+
+
+
+#### **POST /api/upload-excel** (RPA)**Obtener historial de cálculos**
+
+**Importar ventas desde Excel/CSV**
+
+- **Headers:** `Authorization: Bearer [token]` (requerido)- **Headers:** `Authorization: Bearer [token]` (requerido)
+
+- **Body:** `{ rows: [{ventasMensuales, tipoActividad, ...}] }`- **Respuesta:** `{ success: true, data: [calculations...] }`
+
+- **Respuesta:** `{ success: true, data: { totalRows, savedRows } }`- **Funcionalidad:**
+
+  - Retorna últimos 50 cálculos del usuario ordenados por fecha
+
+#### **POST /api/process-batch** (RPA)
+
+**Procesar ventas importadas en lote**#### **POST /api/pdf**
+
+- **Headers:** `Authorization: Bearer [token]` (requerido)
+
+- **Respuesta:** `{ success: true, data: { totalProcessed, results: [...] } }`**Generar reporte en PDF**
+
+
+
+---- **Headers:** `Authorization: Bearer [token]` (requerido)
+
+- **Body:** `{ calculationData: {...} }`
+
+## 🔗 COMUNICACIÓN FRONTEND-BACKEND- **Respuesta:** `{ success: true, data: { htmlContent, filename } }`
+
+- **Funcionalidad:**
+
+### 📡 Flujo de Datos  - Genera HTML estructurado con los datos del cálculo
+
+  - Frontend renderiza HTML y lo convierte a PDF
+
+**Autenticación:**
+
+1. Usuario ingresa credenciales → Frontend#### **POST /api/upload-excel** (RPA)
+
+2. Frontend envía `POST /api/auth` → Backend
+
+3. Backend valida y genera token JWT → Frontend**Importar ventas desde Excel/CSV**
+
+4. Frontend guarda token en localStorage
+
+5. Token se incluye en todas las peticiones autenticadas- **Headers:** `Authorization: Bearer [token]` (requerido)
+
+- **Body:** `{ rows: [{ventasMensuales, tipoActividad, ...}] }`
+
+**Cálculo de Impuestos:**- **Respuesta:** `{ success: true, data: { totalRows, savedRows } }`
+
+1. Usuario completa formulario → Frontend
+
+2. Frontend envía `POST /api/calcular` con token → Backend#### **POST /api/process-batch** (RPA)
+
+3. Backend calcula impuestos y guarda en BD
+
+4. Backend retorna resultado → Frontend**Procesar ventas importadas en lote**
+
+5. Frontend muestra resultado y actualiza historial
+
+- **Headers:** `Authorization: Bearer [token]` (requerido)
+
+**Generación de PDF:**- **Respuesta:** `{ success: true, data: { totalProcessed, results: [...] } }`
+
+1. Usuario solicita PDF → Frontend
+
+2. Frontend envía `POST /api/pdf` con datos → Backend---
+
+3. Backend genera HTML estructurado → Frontend
+
+4. Frontend renderiza HTML, lo captura con html2canvas## 🔗 CONEXIÓN FRONTEND-BACKEND
+
+5. Frontend convierte imagen a PDF con jsPDF
+
+6. Descarga automática del archivo### 📡 Protocolos de Comunicación
+
+
+
+### 🔧 Configuración#### **1. Autenticación Flow**
+
+
+
+**Variables de entorno necesarias:**```mermaid
+
 sequenceDiagram
-    participant F as Frontend
-    participant B as Backend
-    participant DB as Database
-    
+
+**Frontend (.env):**    participant F as Frontend
+
+```    participant B as Backend
+
+VITE_API_BASE_URL=http://localhost:3000    participant DB as Database
+
+```
+
     F->>B: POST /api/auth {email, password, action}
-    B->>DB: SELECT user WHERE email
-    DB-->>B: User data or null
-    B->>B: bcrypt.compare(password, hash)
-    B->>B: jwt.sign({userId}, secret)
-    B-->>F: {success: true, user, token}
+
+**Backend (.env):**    B->>DB: SELECT user WHERE email
+
+```    DB-->>B: User data or null
+
+DATABASE_URL="file:./dev.db"    B->>B: bcrypt.compare(password, hash)
+
+JWT_SECRET="tu_secreto_super_seguro"    B->>B: jwt.sign({userId}, secret)
+
+```    B-->>F: {success: true, user, token}
+
     F->>F: localStorage.setItem('token', token)
-```
 
-#### **2. Cálculo Avanzado Flow**
-```mermaid
+**CORS:** El backend está configurado para aceptar peticiones del frontend en puerto 5173 con headers de autenticación.```
+
+
+
+---#### **2. Cálculo Avanzado Flow**
+
+
+
+## ✨ CARACTERÍSTICAS PRINCIPALES```mermaid
+
 sequenceDiagram
-    participant F as Frontend
+
+### 📊 Dos Modos de Cálculo    participant F as Frontend
+
     participant B as Backend
-    participant DB as Database
-    
-    F->>B: POST /api/calcular + Bearer Token
-    B->>B: verifyToken(authorization)
-    B->>B: calculateRST(formData)
-    B->>DB: INSERT calculation
+
+**Calculadora Básica:**    participant DB as Database
+
+- Funciona completamente en el navegador
+
+- Resultados instantáneos    F->>B: POST /api/calcular + Bearer Token
+
+- No requiere autenticación    B->>B: verifyToken(authorization)
+
+- Los datos no salen del navegador    B->>B: calculateRST(formData)
+
+- Ideal para consultas rápidas    B->>DB: INSERT calculation
+
     DB-->>B: Calculation saved
-    B-->>F: {success: true, data: result}
-    F->>F: setResultado(data)
-```
 
-### 🔄 Estado y Sincronización
+**Calculadora Avanzada:**    B-->>F: {success: true, data: result}
 
-#### **Estado del Frontend:**
-```javascript
+- Requiere registro y autenticación    F->>F: setResultado(data)
+
+- Incluye deducciones y gastos deducibles```
+
+- Guarda cálculos en base de datos
+
+- Muestra historial de cálculos anteriores### 🔄 Estado y Sincronización
+
+- Genera reportes en PDF
+
+- Ideal para uso profesional#### **Estado del Frontend:**
+
+
+
+### 📄 Sistema de PDFs```javascript
+
 // Flujo de estados en App.jsx
-const [user, setUser] = useState(null);        // Usuario autenticado
-const [token, setToken] = useState(null);      // JWT token
-const [useAdvanced, setUseAdvanced] = useState(false); // Modo de calculadora
 
-// Persistencia automática
-useEffect(() => {
-  const savedToken = localStorage.getItem('token');
-  const savedUser = localStorage.getItem('user');
-  
-  if (savedToken && savedUser) {
-    setToken(savedToken);
-    setUser(JSON.parse(savedUser));
-  }
+El sistema combina backend y frontend:const [user, setUser] = useState(null); // Usuario autenticado
+
+- Backend genera HTML con los datos del cálculoconst [token, setToken] = useState(null); // JWT token
+
+- Frontend renderiza ese HTML temporalmenteconst [useAdvanced, setUseAdvanced] = useState(false); // Modo de calculadora
+
+- html2canvas captura el HTML como imagen
+
+- jsPDF convierte la imagen a PDF// Persistencia automática
+
+- El usuario descarga el archivo automáticamenteuseEffect(() => {
+
+  const savedToken = localStorage.getItem("token");
+
+### 🤖 Automatización RPA (Opcional)  const savedUser = localStorage.getItem("user");
+
+
+
+Integración con n8n para procesar archivos Excel/CSV:  if (savedToken && savedUser) {
+
+- Importar múltiples ventas desde archivos    setToken(savedToken);
+
+- Procesar cálculos en lote    setUser(JSON.parse(savedUser));
+
+- Almacenar resultados en base de datos  }
+
 }, []);
-```
 
-#### **Sincronización de Datos:**
-```javascript
+---```
+
+
+
+## 🚀 EJECUCIÓN DEL PROYECTO#### **Sincronización de Datos:**
+
+
+
+### Instalación```javascript
+
 // Patrón de sincronización usado en AdvancedCalculator
-useEffect(() => {
-  if (token) {
-    obtenerHistorial(); // Cargar historial automáticamente
-  }
+
+```bashuseEffect(() => {
+
+# Instalar dependencias del frontend  if (token) {
+
+cd frontend    obtenerHistorial(); // Cargar historial automáticamente
+
+npm install  }
+
 }, [token, obtenerHistorial]);
 
-// Invalidación automática tras nuevos cálculos
-const calcularImpuestos = async () => {
+# Instalar dependencias del backend
+
+cd ../backend// Invalidación automática tras nuevos cálculos
+
+npm installconst calcularImpuestos = async () => {
+
   // ... cálculo
-  if (data.success) {
-    setResultado(data.data);
-    obtenerHistorial(); // Refrescar historial
-  }
+
+# Configurar base de datos  if (data.success) {
+
+npx prisma generate    setResultado(data.data);
+
+npx prisma db push    obtenerHistorial(); // Refrescar historial
+
+```  }
+
 };
-```
 
-### 🌐 Configuración de Environment
+### Desarrollo```
 
-#### **Variables de Entorno:**
-```bash
+
+
+```bash### 🌐 Configuración de Environment
+
+# Terminal 1: Frontend
+
+cd frontend#### **Variables de Entorno:**
+
+npm run dev
+
+# Abre http://localhost:5173```bash
+
 # Frontend (.env)
-VITE_API_BASE_URL=http://localhost:3000
 
-# Backend (.env)
-DATABASE_URL="file:./dev.db"
-JWT_SECRET="secret_super_seguro_para_desarrollo"
+# Terminal 2: BackendVITE_API_BASE_URL=http://localhost:3000
+
+cd backend
+
+npm run dev# Backend (.env)
+
+# API en http://localhost:3000DATABASE_URL="file:./dev.db"
+
+```JWT_SECRET="secret_super_seguro_para_desarrollo"
+
 ```
+
+### Producción
 
 #### **Configuración de CORS:**
-```javascript
-// backend/next.config.js
-const nextConfig = {
+
+```bash
+
+# Build frontend```javascript
+
+cd frontend// backend/next.config.js
+
+npm run buildconst nextConfig = {
+
   async headers() {
-    return [
-      {
-        source: "/api/:path*",
-        headers: [
-          { key: "Access-Control-Allow-Credentials", value: "true" },
+
+# Build backend    return [
+
+cd backend      {
+
+npm run build        source: "/api/:path*",
+
+npm start        headers: [
+
+```          { key: "Access-Control-Allow-Credentials", value: "true" },
+
           { key: "Access-Control-Allow-Origin", value: "*" },
-          { key: "Access-Control-Allow-Methods", value: "GET,OPTIONS,PATCH,DELETE,POST,PUT" },
-          { key: "Access-Control-Allow-Headers", value: "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization" },
-        ]
-      }
-    ]
-  }
-};
-```
+
+---          {
+
+            key: "Access-Control-Allow-Methods",
+
+## 🎯 CASOS DE USO            value: "GET,OPTIONS,PATCH,DELETE,POST,PUT",
+
+          },
+
+### Usuario Casual          {
+
+1. Accede a la aplicación            key: "Access-Control-Allow-Headers",
+
+2. Usa calculadora básica            value:
+
+3. Obtiene estimación rápida sin registro              "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization",
+
+          },
+
+### Emprendedor/Contador        ],
+
+1. Se registra en la plataforma      },
+
+2. Usa calculadora avanzada con deducciones    ];
+
+3. Guarda múltiples cálculos  },
+
+4. Descarga reportes en PDF};
+
+5. Consulta historial cuando necesite```
+
+
+
+### Procesamiento Masivo (RPA)---
+
+1. Prepara archivo Excel/CSV con ventas
+
+2. n8n lee el archivo automáticamente## 🚀 CARACTERÍSTICAS AVANZADAS
+
+3. Datos se importan al backend
+
+4. Sistema procesa todos los cálculos en lote### 📊 Sistema de Cálculo Dual
+
+5. Resultados disponibles en historial
+
+#### **Cálculo Básico (Frontend)**
 
 ---
 
-## 🚀 CARACTERÍSTICAS AVANZADAS
-
-### 📊 Sistema de Cálculo Dual
-
-#### **Cálculo Básico (Frontend)**
 - **Velocidad**: Resultados instantáneos
-- **Privacidad**: Sin envío de datos
+
+## 📚 CONCLUSIÓN- **Privacidad**: Sin envío de datos
+
 - **Offline**: Funciona sin conexión
-- **Limitaciones**: Solo cálculos simples
 
-#### **Cálculo Avanzado (Backend)**
-- **Precisión**: Considera deducciones y gastos
-- **Persistencia**: Guarda en base de datos
+**Simula tu Impuesto** es una aplicación moderna que combina:- **Limitaciones**: Solo cálculos simples
+
+- **Simplicidad:** Interfaz intuitiva con Tailwind CSS
+
+- **Seguridad:** Autenticación JWT y contraseñas encriptadas#### **Cálculo Avanzado (Backend)**
+
+- **Funcionalidad:** Dos modos de cálculo para diferentes necesidades
+
+- **Escalabilidad:** Arquitectura separada frontend/backend- **Precisión**: Considera deducciones y gastos
+
+- **Automatización:** Integración RPA opcional con n8n- **Persistencia**: Guarda en base de datos
+
 - **Historial**: Tracking completo
-- **PDFs**: Generación de reportes
 
-### 📄 Generación de PDFs
+La arquitectura permite que la aplicación sea fácil de mantener, extender y desplegar en plataformas cloud como Vercel.- **PDFs**: Generación de reportes
 
-#### **Proceso Híbrido:**
+
+
+---### 📄 Generación de PDFs
+
+
+
+*Documentación técnica generada para la exposición del proyecto **Simula tu Impuesto***  #### **Proceso Híbrido:**
+
+*Autor: Daniel Leal | Fecha: Noviembre 2025*
+
 1. **Backend**: Genera HTML estructurado
 2. **Frontend**: Renderiza HTML en DOM temporal
 3. **html2canvas**: Captura como imagen
@@ -770,6 +749,7 @@ const nextConfig = {
 5. **Download**: Descarga automática
 
 #### **Ventajas de este enfoque:**
+
 - **Flexibilidad**: HTML/CSS para diseño
 - **Performance**: No requiere headless browser en servidor
 - **Customización**: Control total del layout
@@ -778,18 +758,21 @@ const nextConfig = {
 ### 🔐 Seguridad Multi-Capa
 
 #### **Frontend:**
+
 - Validación de formularios
 - Sanitización de inputs
 - Manejo seguro de tokens
 - HTTPS only en producción
 
 #### **Backend:**
+
 - Hash de contraseñas con bcrypt
 - JWT con expiración
 - Validación de tipos TypeScript
 - Rate limiting (futuro)
 
 #### **Base de Datos:**
+
 - Constraints y validaciones
 - Índices únicos
 - Relaciones con CASCADE
@@ -802,6 +785,7 @@ const nextConfig = {
 ### ⚡ Performance Frontend
 
 #### **Bundle Size Optimization:**
+
 ```javascript
 // vite.config.js - Code splitting
 export default defineConfig({
@@ -809,30 +793,34 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          vendor: ['react', 'react-dom'],
-          ui: ['lucide-react'],
-          pdf: ['jspdf', 'html2canvas']
-        }
-      }
-    }
-  }
+          vendor: ["react", "react-dom"],
+          ui: ["lucide-react"],
+          pdf: ["jspdf", "html2canvas"],
+        },
+      },
+    },
+  },
 });
 ```
 
 #### **Lazy Loading:**
+
 ```javascript
 // Componentes cargados dinámicamente
-const AdvancedCalculator = lazy(() => import('./components/AdvancedCalculator'));
+const AdvancedCalculator = lazy(() =>
+  import("./components/AdvancedCalculator")
+);
 
 // Suspense boundary
 <Suspense fallback={<div>Cargando...</div>}>
   <AdvancedCalculator />
-</Suspense>
+</Suspense>;
 ```
 
 ### 🗄️ Performance Backend
 
 #### **Database Optimization:**
+
 ```prisma
 // Índices para consultas frecuentes
 model User {
@@ -848,6 +836,7 @@ model Calculation {
 ```
 
 #### **Query Optimization:**
+
 ```typescript
 // Consultas eficientes con Prisma
 const calculations = await prisma.calculation.findMany({
@@ -856,11 +845,11 @@ const calculations = await prisma.calculation.findMany({
     id: true,
     impuestoMensual: true,
     tipoActividad: true,
-    createdAt: true
+    createdAt: true,
     // Solo campos necesarios
   },
-  orderBy: { createdAt: 'desc' },
-  take: 50 // Límite de resultados
+  orderBy: { createdAt: "desc" },
+  take: 50, // Límite de resultados
 });
 ```
 
@@ -886,12 +875,14 @@ const calculations = await prisma.calculation.findMany({
 ### 🚀 Proceso de Despliegue
 
 #### **Development:**
+
 1. `npm install` - Instalar dependencias
 2. `npx prisma generate` - Generar cliente Prisma
 3. `npx prisma db push` - Sincronizar esquema
 4. `npm run dev` - Iniciar servidores
 
 #### **Production (Vercel):**
+
 1. **Frontend**: Build automático con Vite
 2. **Backend**: Deployment como Serverless Functions
 3. **Database**: PostgreSQL en Vercel Postgres
@@ -902,12 +893,14 @@ const calculations = await prisma.calculation.findMany({
 ## 🎯 CASOS DE USO PRINCIPALES
 
 ### 👨‍💼 Emprendedor Casual
+
 1. Accede sin registro
 2. Usa calculadora básica
 3. Obtiene estimación rápida
 4. Entiende beneficios del RST
 
 ### 👩‍💼 Empresario Formal
+
 1. Se registra en la plataforma
 2. Usa calculadora avanzada
 3. Incluye deducciones y gastos
@@ -915,6 +908,7 @@ const calculations = await prisma.calculation.findMany({
 5. Consulta historial de cálculos
 
 ### 🧮 Contador Profesional
+
 1. Gestiona múltiples clientes
 2. Genera reportes profesionales
 3. Mantiene historial detallado
@@ -925,18 +919,21 @@ const calculations = await prisma.calculation.findMany({
 ## 🔮 ROADMAP FUTURO
 
 ### 🎯 Corto Plazo (1-2 meses)
+
 - [ ] Dashboard de administración
 - [ ] Exportar historial a Excel
 - [ ] Notificaciones por email
 - [ ] API rate limiting
 
 ### 🚀 Mediano Plazo (3-6 meses)
+
 - [ ] Múltiples idiomas (i18n)
 - [ ] Tema oscuro
 - [ ] PWA (Progressive Web App)
 - [ ] Integración con APIs de DIAN
 
 ### 🌟 Largo Plazo (6+ meses)
+
 - [ ] Calculadora para otros regímenes
 - [ ] Comparación entre regímenes
 - [ ] Sistema de alertas fiscales
@@ -947,18 +944,21 @@ const calculations = await prisma.calculation.findMany({
 ## 📚 RECURSOS TÉCNICOS
 
 ### 📖 Documentación
+
 - [React 19 Docs](https://react.dev/)
 - [Next.js 15 App Router](https://nextjs.org/docs)
 - [Prisma ORM Guide](https://www.prisma.io/docs)
 - [Tailwind CSS](https://tailwindcss.com/docs)
 
 ### 🛠️ Herramientas de Desarrollo
+
 - **IDE**: VS Code con extensiones React/TypeScript
 - **Database**: Prisma Studio para visualización
 - **API Testing**: Thunder Client o Postman
 - **Version Control**: Git con GitHub
 
 ### 🔍 Debugging y Monitoreo
+
 - **Frontend**: React DevTools, Vite HMR
 - **Backend**: Next.js built-in debugging
 - **Database**: Prisma query logging
@@ -969,6 +969,7 @@ const calculations = await prisma.calculation.findMany({
 ## ✅ CONCLUSIONES TÉCNICAS
 
 ### 🎯 Fortalezas de la Arquitectura
+
 1. **Monorepo**: Simplifica desarrollo y deployment
 2. **TypeScript**: Reduce bugs y mejora DX
 3. **Prisma**: Type-safe database access
@@ -976,6 +977,7 @@ const calculations = await prisma.calculation.findMany({
 5. **Responsive**: Funciona en todos los dispositivos
 
 ### 🚀 Innovaciones Implementadas
+
 1. **Dual Calculator**: Básica (local) + Avanzada (servidor)
 2. **Hybrid PDF**: Backend HTML + Frontend rendering
 3. **Smart Auth**: JWT con localStorage persistence
@@ -983,6 +985,7 @@ const calculations = await prisma.calculation.findMany({
 5. **CORS Handling**: Cross-origin requests seguros
 
 ### 📊 Impacto del Proyecto
+
 - **Educativo**: Democratiza conocimiento fiscal
 - **Práctico**: Herramienta real para emprendedores
 - **Técnico**: Demostración de arquitectura moderna
@@ -990,5 +993,5 @@ const calculations = await prisma.calculation.findMany({
 
 ---
 
-*Documentación técnica generada para la exposición del proyecto **Simula tu Impuesto***  
-*Autor: Daniel Leal | Fecha: Septiembre 2025*
+\*Documentación técnica generada para la exposición del proyecto **Simula tu Impuesto\***  
+_Autor: Daniel Leal | Fecha: Septiembre 2025_

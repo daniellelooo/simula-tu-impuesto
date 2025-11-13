@@ -1,54 +1,79 @@
-import React, { useState } from 'react';
-import { User, Lock, Mail, UserPlus, LogIn } from 'lucide-react';
+import React, { useState } from "react";
 
+// Aquí guardamos la dirección del servidor donde está la API
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { User, Lock, Mail, UserPlus, LogIn } from "lucide-react";
+
+// Este componente muestra la ventana para iniciar sesión o registrarse
+// onClose: sirve para cerrar la ventana
+// onLogin: sirve para avisar que el usuario ya inició sesión
 const AuthModal = ({ onClose, onLogin }) => {
+  // Si es true, estamos en modo "iniciar sesión". Si es false, en "registrar"
   const [isLogin, setIsLogin] = useState(true);
+  // Aquí guardamos lo que el usuario escribe en los campos
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    name: ''
+    email: "",
+    password: "",
+    name: "",
   });
+  // Esto sirve para mostrar un mensaje de "cargando..." mientras se procesa
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  // Aquí guardamos los mensajes de error para mostrarlos si algo sale mal
+  const [error, setError] = useState("");
 
+  // Esta función se ejecuta cuando el usuario le da al botón de enviar
+  // Puede ser para iniciar sesión o para crear una cuenta nueva
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError('');
+    e.preventDefault(); // Evita que la página se recargue
+    setLoading(true); // Muestra el mensaje de cargando
+    setError(""); // Borra errores anteriores
 
     try {
-      const response = await fetch('http://localhost:3001/api/auth', {
-        method: 'POST',
+      // Aquí enviamos los datos al servidor
+      // "action" dice si es login o registro
+      const response = await fetch(`${API_BASE_URL}/api/auth`, {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          action: isLogin ? 'login' : 'register',
-          ...formData
+          action: isLogin ? "login" : "register",
+          ...formData,
         }),
       });
 
+      // Recibimos la respuesta del servidor
       const data = await response.json();
 
       if (data.success) {
-        localStorage.setItem('token', data.data.token);
-        localStorage.setItem('user', JSON.stringify(data.data.user));
+        // Si todo salió bien:
+        // Guardamos el usuario y el token para recordar que ya inició sesión
+        localStorage.setItem("token", data.data.token);
+        localStorage.setItem("user", JSON.stringify(data.data.user));
+        // Avisamos al resto de la app que el usuario ya está autenticado
         onLogin(data.data.user, data.data.token);
+        // Cerramos la ventana
         onClose();
       } else {
-        setError(data.error || 'Error en la autenticación');
+        // Si hubo algún error, lo mostramos
+        setError(data.error || "Error en la autenticación");
       }
     } catch (err) {
-      setError('Error de conexión. Verifica que el backend esté funcionando.');
+      // Si no pudimos conectar con el servidor, mostramos este error
+      setError({
+        value: err,
+        message: "No se pudo conectar con el servidor. Intenta más tarde.",
+      });
     } finally {
-      setLoading(false);
+      setLoading(false); // Quitamos el mensaje de cargando
     }
   };
 
+  // Esta función actualiza lo que el usuario escribe en los campos
   const handleChange = (e) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
+      [e.target.name]: e.target.value,
     }));
   };
 
@@ -57,13 +82,19 @@ const AuthModal = ({ onClose, onLogin }) => {
       <div className="bg-white rounded-2xl p-8 w-full max-w-md mx-4">
         <div className="text-center mb-6">
           <div className="text-3xl mb-2">
-            {isLogin ? <LogIn className="mx-auto w-12 h-12 text-green-600" /> : <UserPlus className="mx-auto w-12 h-12 text-green-600" />}
+            {isLogin ? (
+              <LogIn className="mx-auto w-12 h-12 text-green-600" />
+            ) : (
+              <UserPlus className="mx-auto w-12 h-12 text-green-600" />
+            )}
           </div>
           <h2 className="text-2xl font-bold text-gray-800">
-            {isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}
+            {isLogin ? "Iniciar Sesión" : "Crear Cuenta"}
           </h2>
           <p className="text-gray-600 text-sm mt-2">
-            {isLogin ? 'Accede a tu historial de cálculos' : 'Guarda y descarga tus cálculos'}
+            {isLogin
+              ? "Accede a tu historial de cálculos"
+              : "Guarda y descarga tus cálculos"}
           </p>
         </div>
 
@@ -129,7 +160,11 @@ const AuthModal = ({ onClose, onLogin }) => {
             disabled={loading}
             className="w-full bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
           >
-            {loading ? 'Cargando...' : isLogin ? 'Iniciar Sesión' : 'Crear Cuenta'}
+            {loading
+              ? "Cargando..."
+              : isLogin
+              ? "Iniciar Sesión"
+              : "Crear Cuenta"}
           </button>
         </form>
 
@@ -138,7 +173,9 @@ const AuthModal = ({ onClose, onLogin }) => {
             onClick={() => setIsLogin(!isLogin)}
             className="text-green-600 hover:text-green-700 text-sm"
           >
-            {isLogin ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión'}
+            {isLogin
+              ? "¿No tienes cuenta? Regístrate"
+              : "¿Ya tienes cuenta? Inicia sesión"}
           </button>
         </div>
 

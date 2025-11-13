@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Calculator, Info, CheckCircle, AlertCircle } from 'lucide-react';
+import React, { useState } from "react";
+import { Calculator, Info, CheckCircle, AlertCircle } from "lucide-react";
 
 const SimpleCalculator = () => {
   const [ingresos, setIngresos] = useState("");
@@ -236,9 +236,7 @@ const SimpleCalculator = () => {
               <div className="text-2xl font-bold text-purple-800 mb-2">
                 {resultado.tarifa}%
               </div>
-              <div className="text-purple-600 font-medium">
-                Tarifa efectiva
-              </div>
+              <div className="text-purple-600 font-medium">Tarifa efectiva</div>
             </div>
           </div>
 
@@ -343,8 +341,7 @@ const SimpleCalculator = () => {
                       • Esta es una simulación con fines educativos únicamente
                     </li>
                     <li>
-                      • Los cálculos pueden variar según tu situación
-                      específica
+                      • Los cálculos pueden variar según tu situación específica
                     </li>
                     <li>
                       • Consulta siempre con un contador o la DIAN para casos

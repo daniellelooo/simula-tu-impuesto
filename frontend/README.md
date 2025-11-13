@@ -5,21 +5,26 @@ Interfaz React que proporciona una calculadora interactiva del Régimen Simple d
 ## 🚀 Inicio Rápido
 
 ### Prerrequisitos
+
 - Node.js 18+
 - npm
 
 ### Instalación
+
 ```bash
 npm install
 ```
 
 ### Desarrollo
+
 ```bash
 npm run dev
 ```
+
 Abre [http://localhost:5173](http://localhost:5173) en tu navegador.
 
 ### Build de Producción
+
 ```bash
 npm run build
 npm run preview
@@ -52,6 +57,7 @@ frontend/
 ## 🧮 Funcionalidades
 
 ### Calculadora RST
+
 - Input de ingresos con formato de moneda colombiana
 - Selección de tipo de actividad económica
 - Selección de tiempo del negocio
@@ -59,11 +65,13 @@ frontend/
 - Resultados visuales detallados
 
 ### Sección Educativa
+
 - Información sobre qué es el RST
 - Beneficios de la formalización empresarial
 - Desmitificación de creencias falsas sobre impuestos
 
 ### UI/UX
+
 - Diseño responsive (mobile-first)
 - Interfaz intuitiva y accesible
 - Animaciones y transiciones suaves
@@ -72,27 +80,33 @@ frontend/
 ## 🔗 Integración con Backend
 
 ### Variables de Entorno
+
 Crea un archivo `.env` (opcional):
+
 ```bash
 VITE_API_BASE_URL=http://localhost:3000
 ```
 
 ### API Calls
+
 El frontend espera un endpoint en:
+
 ```
 POST http://localhost:3000/api/calcular
 ```
 
 **Request:**
+
 ```json
 {
   "ingresos": 800000,
-  "tipoActividad": "venta-productos", 
+  "tipoActividad": "venta-productos",
   "tiempoNegocio": "1-3-anos"
 }
 ```
 
 **Response:**
+
 ```json
 {
   "ingresosMensuales": 800000,
@@ -105,25 +119,41 @@ POST http://localhost:3000/api/calcular
 ## 🎨 Personalización
 
 ### Colores
+
 Los colores principales están definidos en `tailwind.config.js`:
+
 - Verde: Para acciones principales y éxito
 - Azul: Para información
 - Gris: Para texto y fondos neutros
 - Rojo: Para alertas y correcciones
 
 ### Componentes CSS
+
 En `src/index.css` se definen clases utilitarias:
+
 ```css
-.btn-primary    # Botones principales
-.input-field    # Campos de formulario
-.card          # Tarjetas de contenido
+.btn-primary
+  #
+  Botones
+  principales
+  .input-field
+  #
+  Campos
+  de
+  formulario
+  .card
+  #
+  Tarjetas
+  de
+  contenido;
 ```
 
 ## 📱 Responsive Design
 
 El diseño está optimizado para:
+
 - 📱 **Mobile:** 320px - 768px
-- 💻 **Tablet:** 768px - 1024px  
+- 💻 **Tablet:** 768px - 1024px
 - 🖥️ **Desktop:** 1024px+
 
 ## 🧪 Testing
@@ -139,18 +169,21 @@ npm run type-check
 ## 🚀 Deployment
 
 ### Netlify
+
 ```bash
 npm run build
 # Sube la carpeta `dist/`
 ```
 
 ### Vercel
+
 ```bash
 npm run build
 # Conecta el repositorio en Vercel
 ```
 
 ### Variables de Entorno en Producción
+
 ```bash
 VITE_API_BASE_URL=https://tu-api-production.com
 ```
@@ -159,14 +192,14 @@ VITE_API_BASE_URL=https://tu-api-production.com
 
 ```json
 {
-  "dev": "vite",                    // Servidor de desarrollo
-  "build": "vite build",            // Build de producción  
-  "lint": "eslint .",               // Linting con ESLint
-  "preview": "vite preview"         // Preview del build
+  "dev": "vite", // Servidor de desarrollo
+  "build": "vite build", // Build de producción
+  "lint": "eslint .", // Linting con ESLint
+  "preview": "vite preview" // Preview del build
 }
 ```
 
-##  Problemas Conocidos
+## Problemas Conocidos
 
 - El backend debe estar corriendo en puerto 3000 para los cálculos
 - Sin backend, la calculadora mostrará un error
@@ -182,6 +215,7 @@ VITE_API_BASE_URL=https://tu-api-production.com
 ## 📞 Soporte
 
 ¿Problemas con el frontend?
+
 - Revisa que Node.js esté actualizado
 - Verifica que todas las dependencias estén instaladas
 - Asegúrate de que el puerto 5173 esté disponible

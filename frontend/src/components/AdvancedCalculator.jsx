@@ -1,22 +1,31 @@
-import React, { useState } from 'react';
-import { Calculator, Download, History, Plus, Minus } from 'lucide-react';
-import jsPDF from 'jspdf';
-import html2canvas from 'html2canvas';
+import React, { useState } from "react";
+
+// URL base de la API, obtenida de las variables de entorno
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
+import { Calculator, Download, History, Plus, Minus } from "lucide-react";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 const AdvancedCalculator = ({ user, token }) => {
+  // Estado para los datos del formulario
   const [formData, setFormData] = useState({
-    ventasMensuales: '',
-    tipoActividad: 'venta_productos',
-    tiempoActividad: '1-3_años',
-    deducciones: '',
-    ingresosBrutos: '',
-    gastosDeducibles: ''
+    ventasMensuales: "",
+    tipoActividad: "venta_productos",
+    tiempoActividad: "1-3_años",
+    deducciones: "",
+    ingresosBrutos: "",
+    gastosDeducibles: "",
   });
+  // Estado para el resultado del cálculo
   const [resultado, setResultado] = useState(null);
+  // Estado para el historial de cálculos
   const [historial, setHistorial] = useState([]);
+  // Mostrar/ocultar opciones avanzadas
   const [showAdvanced, setShowAdvanced] = useState(false);
+  // Estado de carga para mostrar spinner o deshabilitar botones
   const [loading, setLoading] = useState(false);
 
+  // Formatea un número como moneda COP
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat("es-CO", {
       style: "currency",
@@ -25,43 +34,63 @@ const AdvancedCalculator = ({ user, token }) => {
     }).format(amount);
   };
 
+  // Maneja los cambios en los inputs del formulario
   const handleInputChange = (field, value) => {
-    // Formatear números con separadores de miles
-    if (['ventasMensuales', 'deducciones', 'ingresosBrutos', 'gastosDeducibles'].includes(field)) {
+    // Si el campo es numérico, lo formatea con separadores de miles
+    if (
+      [
+        "ventasMensuales",
+        "deducciones",
+        "ingresosBrutos",
+        "gastosDeducibles",
+      ].includes(field)
+    ) {
       const numericValue = value.replace(/[^\d]/g, "");
       const formatted = new Intl.NumberFormat("es-CO").format(numericValue);
-      setFormData(prev => ({ ...prev, [field]: formatted }));
+      setFormData((prev) => ({ ...prev, [field]: formatted }));
     } else {
-      setFormData(prev => ({ ...prev, [field]: value }));
+      setFormData((prev) => ({ ...prev, [field]: value }));
     }
   };
 
+  // Envía los datos al backend para calcular impuestos
   const calcularImpuestos = async () => {
-    const ventasMensuales = parseFloat(formData.ventasMensuales.replace(/[^\d]/g, ""));
+    const ventasMensuales = parseFloat(
+      formData.ventasMensuales.replace(/[^\d]/g, "")
+    );
     if (!ventasMensuales || ventasMensuales <= 0) return;
 
     setLoading(true);
 
     try {
+      // Prepara los datos para enviar al backend
       const calculationData = {
         ventasMensuales,
         tipoActividad: formData.tipoActividad,
         tiempoActividad: formData.tiempoActividad,
-        deducciones: parseFloat(formData.deducciones.replace(/[^\d]/g, "") || 0),
-        ingresosBrutos: parseFloat(formData.ingresosBrutos.replace(/[^\d]/g, "") || 0),
-        gastosDeducibles: parseFloat(formData.gastosDeducibles.replace(/[^\d]/g, "") || 0)
+        deducciones: parseFloat(
+          formData.deducciones.replace(/[^\d]/g, "") || 0
+        ),
+        ingresosBrutos: parseFloat(
+          formData.ingresosBrutos.replace(/[^\d]/g, "") || 0
+        ),
+        gastosDeducibles: parseFloat(
+          formData.gastosDeducibles.replace(/[^\d]/g, "") || 0
+        ),
       };
 
       const headers = {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       };
 
+      // Si hay token, se agrega al header para autenticación
       if (token) {
-        headers['Authorization'] = `Bearer ${token}`;
+        headers["Authorization"] = `Bearer ${token}`;
       }
 
-      const response = await fetch('http://localhost:3001/api/calcular', {
-        method: 'POST',
+      // Realiza la petición al backend
+      const response = await fetch(`${API_BASE_URL}/api/calcular`, {
+        method: "POST",
         headers,
         body: JSON.stringify(calculationData),
       });
@@ -71,23 +100,24 @@ const AdvancedCalculator = ({ user, token }) => {
       if (data.success) {
         setResultado(data.data);
       } else {
-        alert(data.error || 'Error en el cálculo');
+        alert(data.error || "Error en el cálculo");
       }
     } catch {
-      alert('Error de conexión. Verifica que el backend esté funcionando.');
+      alert("Error de conexión. Verifica que el backend esté funcionando.");
     } finally {
       setLoading(false);
     }
   };
 
+  // Obtiene el historial de cálculos del usuario autenticado
   const obtenerHistorial = React.useCallback(async () => {
     if (!token) return;
 
     try {
-      const response = await fetch('http://localhost:3001/api/historial', {
+      const response = await fetch(`${API_BASE_URL}/api/historial`, {
         headers: {
-          'Authorization': `Bearer ${token}`
-        }
+          Authorization: `Bearer ${token}`,
+        },
       });
 
       const data = await response.json();
@@ -95,69 +125,71 @@ const AdvancedCalculator = ({ user, token }) => {
         setHistorial(data.data);
       }
     } catch (error) {
-      console.error('Error obteniendo historial:', error);
+      console.error("Error obteniendo historial:", error);
     }
   }, [token]);
 
+  // Genera y descarga el PDF del resultado usando html2canvas y jsPDF
   const descargarPDF = async () => {
     if (!resultado) return;
 
     try {
-      const response = await fetch('http://localhost:3001/api/pdf', {
-        method: 'POST',
+      const response = await fetch(`${API_BASE_URL}/api/pdf`, {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({ calculationData: resultado }),
       });
 
       const data = await response.json();
-      
+
       if (data.success) {
-        // Crear un elemento temporal para renderizar el HTML
-        const tempDiv = document.createElement('div');
+        // Renderiza el HTML recibido en un div temporal
+        const tempDiv = document.createElement("div");
         tempDiv.innerHTML = data.data.htmlContent;
-        tempDiv.style.position = 'absolute';
-        tempDiv.style.left = '-9999px';
-        tempDiv.style.width = '210mm'; // A4 width
+        tempDiv.style.position = "absolute";
+        tempDiv.style.left = "-9999px";
+        tempDiv.style.width = "210mm"; // A4 width
         document.body.appendChild(tempDiv);
 
-        // Generar PDF usando html2canvas y jsPDF
+        // Convierte el HTML a imagen y la agrega al PDF
         const canvas = await html2canvas(tempDiv, {
           scale: 2,
           useCORS: true,
-          allowTaint: true
+          allowTaint: true,
         });
 
-        const imgData = canvas.toDataURL('image/png');
-        const pdf = new jsPDF('p', 'mm', 'a4');
+        const imgData = canvas.toDataURL("image/png");
+        const pdf = new jsPDF("p", "mm", "a4");
         const pdfWidth = pdf.internal.pageSize.getWidth();
         const pdfHeight = (canvas.height * pdfWidth) / canvas.width;
 
-        pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+        pdf.addImage(imgData, "PNG", 0, 0, pdfWidth, pdfHeight);
         pdf.save(data.data.filename);
 
-        // Limpiar el elemento temporal
         document.body.removeChild(tempDiv);
       }
     } catch (error) {
-      console.error('Error generando PDF:', error);
-      alert('Error generando el PDF');
+      console.error("Error generando PDF:", error);
+      alert("Error generando el PDF");
     }
   };
 
+  // Carga el historial automáticamente cuando el token cambia
   React.useEffect(() => {
     if (token) {
       obtenerHistorial();
     }
   }, [token, obtenerHistorial]);
 
+  // Tipos de actividad disponibles
   const tiposActividad = {
-    'venta_productos': 'Venta de productos',
-    'servicios_personales': 'Servicios personales',
-    'venta_ambulante': 'Venta ambulante',
-    'otros': 'Otros'
+    venta_productos: "Venta de productos",
+    servicios_personales: "Servicios personales",
+    venta_ambulante: "Venta ambulante",
+    otros: "Otros",
   };
 
   return (
@@ -183,11 +215,15 @@ const AdvancedCalculator = ({ user, token }) => {
               Ventas mensuales *
             </label>
             <div className="relative">
-              <span className="absolute left-4 top-4 text-gray-500 text-xl">$</span>
+              <span className="absolute left-4 top-4 text-gray-500 text-xl">
+                $
+              </span>
               <input
                 type="text"
                 value={formData.ventasMensuales}
-                onChange={(e) => handleInputChange('ventasMensuales', e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("ventasMensuales", e.target.value)
+                }
                 placeholder="800.000"
                 className="w-full pl-12 pr-4 py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-xl font-medium"
               />
@@ -210,7 +246,9 @@ const AdvancedCalculator = ({ user, token }) => {
                     name="tipoActividad"
                     value={value}
                     checked={formData.tipoActividad === value}
-                    onChange={(e) => handleInputChange('tipoActividad', e.target.value)}
+                    onChange={(e) =>
+                      handleInputChange("tipoActividad", e.target.value)
+                    }
                     className="w-5 h-5 text-green-600 focus:ring-green-500"
                   />
                   <span className="font-medium text-gray-700">{label}</span>
@@ -226,7 +264,9 @@ const AdvancedCalculator = ({ user, token }) => {
             </label>
             <select
               value={formData.tiempoActividad}
-              onChange={(e) => handleInputChange('tiempoActividad', e.target.value)}
+              onChange={(e) =>
+                handleInputChange("tiempoActividad", e.target.value)
+              }
               className="w-full px-4 py-4 border-2 border-gray-300 rounded-xl focus:ring-2 focus:ring-green-500 focus:border-green-500 text-lg"
             >
               <option value="1-3_años">1 a 3 años</option>
@@ -242,7 +282,11 @@ const AdvancedCalculator = ({ user, token }) => {
               onClick={() => setShowAdvanced(!showAdvanced)}
               className="flex items-center text-green-600 hover:text-green-700 font-medium"
             >
-              {showAdvanced ? <Minus className="w-4 h-4 mr-2" /> : <Plus className="w-4 h-4 mr-2" />}
+              {showAdvanced ? (
+                <Minus className="w-4 h-4 mr-2" />
+              ) : (
+                <Plus className="w-4 h-4 mr-2" />
+              )}
               Opciones avanzadas (deducciones y gastos)
             </button>
 
@@ -253,11 +297,15 @@ const AdvancedCalculator = ({ user, token }) => {
                     Ingresos brutos (si diferentes a ventas)
                   </label>
                   <div className="relative">
-                    <span className="absolute left-3 top-3 text-gray-500">$</span>
+                    <span className="absolute left-3 top-3 text-gray-500">
+                      $
+                    </span>
                     <input
                       type="text"
                       value={formData.ingresosBrutos}
-                      onChange={(e) => handleInputChange('ingresosBrutos', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("ingresosBrutos", e.target.value)
+                      }
                       placeholder="0"
                       className="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                     />
@@ -269,11 +317,15 @@ const AdvancedCalculator = ({ user, token }) => {
                     Deducciones permitidas
                   </label>
                   <div className="relative">
-                    <span className="absolute left-3 top-3 text-gray-500">$</span>
+                    <span className="absolute left-3 top-3 text-gray-500">
+                      $
+                    </span>
                     <input
                       type="text"
                       value={formData.deducciones}
-                      onChange={(e) => handleInputChange('deducciones', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("deducciones", e.target.value)
+                      }
                       placeholder="0"
                       className="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                     />
@@ -285,11 +337,15 @@ const AdvancedCalculator = ({ user, token }) => {
                     Gastos deducibles
                   </label>
                   <div className="relative">
-                    <span className="absolute left-3 top-3 text-gray-500">$</span>
+                    <span className="absolute left-3 top-3 text-gray-500">
+                      $
+                    </span>
                     <input
                       type="text"
                       value={formData.gastosDeducibles}
-                      onChange={(e) => handleInputChange('gastosDeducibles', e.target.value)}
+                      onChange={(e) =>
+                        handleInputChange("gastosDeducibles", e.target.value)
+                      }
                       placeholder="0"
                       className="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500"
                     />
@@ -305,7 +361,7 @@ const AdvancedCalculator = ({ user, token }) => {
             disabled={!formData.ventasMensuales || loading}
             className="w-full bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white font-semibold py-4 px-6 rounded-xl transition-colors duration-200 text-lg"
           >
-            {loading ? 'Calculando...' : '🧮 Calcular Impuestos'}
+            {loading ? "Calculando..." : "🧮 Calcular Impuestos"}
           </button>
         </div>
       </div>
@@ -364,7 +420,9 @@ const AdvancedCalculator = ({ user, token }) => {
               <div className="text-2xl mb-2">📈</div>
               <div className="text-sm text-gray-600">Base Gravable</div>
               <div className="font-semibold text-purple-800">
-                {formatCurrency(resultado.baseGravable || resultado.ventasMensuales)}
+                {formatCurrency(
+                  resultado.baseGravable || resultado.ventasMensuales
+                )}
               </div>
             </div>
           </div>
@@ -387,11 +445,12 @@ const AdvancedCalculator = ({ user, token }) => {
                       {formatCurrency(calculo.impuestoMensual)}/mes
                     </div>
                     <div className="text-sm text-gray-600">
-                      {tiposActividad[calculo.tipoActividad]} • {calculo.tiempoActividad}
+                      {tiposActividad[calculo.tipoActividad]} •{" "}
+                      {calculo.tiempoActividad}
                     </div>
                   </div>
                   <div className="text-xs text-gray-500">
-                    {new Date(calculo.createdAt).toLocaleDateString('es-CO')}
+                    {new Date(calculo.createdAt).toLocaleDateString("es-CO")}
                   </div>
                 </div>
               </div>
