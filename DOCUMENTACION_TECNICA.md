@@ -1,318 +1,588 @@
-# 📋 Documentación Técnica - Simula tu Impuesto# 📋 Documentación Técnica - Simula tu Impuesto# 📋 Documentación Técnica - Simula tu Impuesto
+# 📋 Documentación Técnica - Simula tu Impuesto# 📋 Documentación Técnica - Simula tu Impuesto# 📋 Documentación Técnica - Simula tu Impuesto# 📋 Documentación Técnica - Simula tu Impuesto
 
-## 🎯 Resumen Ejecutivo## 🎯 Resumen Ejecutivo## 🎯 Resumen Ejecutivo
+## 🎯 Descripción General## 🎯 Resumen Ejecutivo## 🎯 Resumen Ejecutivo## 🎯 Resumen Ejecutivo
 
-**Simula tu Impuesto** es una aplicación web fullstack que permite calcular el Régimen Simple de Tributación (RST) colombiano. Utiliza una arquitectura separada de frontend y backend, ofreciendo cálculos básicos instantáneos y funcionalidades avanzadas con autenticación y persistencia de datos.**Simula tu Impuesto** es una aplicación web fullstack que permite calcular el Régimen Simple de Tributación (RST) colombiano. Utiliza una arquitectura separada de frontend y backend, ofreciendo cálculos básicos instantáneos y funcionalidades avanzadas con autenticación y persistencia de datos.**Simula tu Impuesto** es una aplicación web fullstack que permite calcular el Régimen Simple de Tributación (RST) colombiano. Utiliza una arquitectura separada de frontend y backend, ofreciendo cálculos básicos instantáneos y funcionalidades avanzadas con autenticación y persistencia de datos.
+**Simula tu Impuesto** es una aplicación web fullstack para calcular el Régimen Simple de Tributación (RST) colombiano. Ofrece dos modalidades: calculadora básica (frontend-only) para consultas rápidas y calculadora avanzada con funcionalidades completas que incluyen autenticación, historial y generación de PDFs.**Simula tu Impuesto** es una aplicación web fullstack que permite calcular el Régimen Simple de Tributación (RST) colombiano. Utiliza una arquitectura separada de frontend y backend, ofreciendo cálculos básicos instantáneos y funcionalidades avanzadas con autenticación y persistencia de datos.**Simula tu Impuesto** es una aplicación web fullstack que permite calcular el Régimen Simple de Tributación (RST) colombiano. Utiliza una arquitectura separada de frontend y backend, ofreciendo cálculos básicos instantáneos y funcionalidades avanzadas con autenticación y persistencia de datos.**Simula tu Impuesto** es una aplicación web fullstack que permite calcular el Régimen Simple de Tributación (RST) colombiano. Utiliza una arquitectura separada de frontend y backend, ofreciendo cálculos básicos instantáneos y funcionalidades avanzadas con autenticación y persistencia de datos.
 
 ---
 
-## 🏗️ Arquitectura General## 🏗️ Arquitectura General## 🏗️ Arquitectura General
+## 🏗️ Arquitectura del Sistema## 🏗️ Arquitectura General## 🏗️ Arquitectura General## 🏗️ Arquitectura General
 
-````La aplicación está dividida en dos partes independientes que se comunican mediante API REST:La aplicación está dividida en dos partes independientes que se comunican mediante API REST:
+### Stack Tecnológico````La aplicación está dividida en dos partes independientes que se comunican mediante API REST:La aplicación está dividida en dos partes independientes que se comunican mediante API REST:
 
-┌──────────────────────┐          HTTP/JSON          ┌──────────────────────┐
+````┌──────────────────────┐ HTTP/JSON          ┌──────────────────────┐
 
-│                      │   ──────────────────────►   │                      │```
+┌─────────────────┐    HTTP/JSON    ┌─────────────────┐
 
-│   FRONTEND           │                             │   BACKEND            │
+│    FRONTEND     │ ────────────── │     BACKEND     ││                      │   ──────────────────────►   │                      │```
 
-│   React + Vite       │   ◄──────────────────────   │   Next.js API        │┌──────────────────────┐          HTTP/JSON          ┌──────────────────────┐┌──────────────────────┐          HTTP/JSON          ┌──────────────────────┐
+│  React + Vite   │                │   Next.js API   │
 
-│   Puerto: 5173       │                             │   Puerto: 3000       │
+│  Puerto: 5173   │                │   Puerto: 3000  ││   FRONTEND           │                             │   BACKEND            │
 
-│                      │                             │                      ││                      │   ──────────────────────►   │                      ││                      │   ──────────────────────►   │                      │
+└─────────────────┘                └─────────────────┘
 
-└──────────────────────┘                             └──────────────────────┘
+         │                                     ││   React + Vite       │   ◄──────────────────────   │   Next.js API        │┌──────────────────────┐          HTTP/JSON          ┌──────────────────────┐┌──────────────────────┐          HTTP/JSON          ┌──────────────────────┐
 
-         │                                                      ││   FRONTEND           │                             │   BACKEND            ││   FRONTEND           │                             │   BACKEND            │
+         │                                     │
 
-         │                                                      │
+    localStorage                        SQLite Database│   Puerto: 5173       │                             │   Puerto: 3000       │
 
-         ▼                                                      ▼│   React + Vite       │   ◄──────────────────────   │   Next.js API        ││   React + Vite       │   ◄──────────────────────   │   Next.js API        │
+     (JWT Token)                         (Prisma ORM)
 
-  localStorage (JWT)                                    SQLite Database
-
-```│   Puerto: 5173       │                             │   Puerto: 3000       ││   Puerto: 5173       │                             │   Puerto: 3000       │
+```│                      │                             │                      ││                      │   ──────────────────────►   │                      ││                      │   ──────────────────────►   │                      │
 
 
 
----│                      │                             │                      ││                      │                             │                      │
+### Frontend (React + Vite)└──────────────────────┘                             └──────────────────────┘
+
+- **Framework**: React 19 con Vite como build tool
+
+- **Estilos**: Tailwind CSS con diseño responsivo         │                                                      ││   FRONTEND           │                             │   BACKEND            ││   FRONTEND           │                             │   BACKEND            │
+
+- **Autenticación**: JWT almacenado en localStorage
+
+- **PDFs**: jsPDF + html2canvas para generación local         │                                                      │
 
 
 
-## 🎨 FRONTEND└──────────────────────┘                             └──────────────────────┘└──────────────────────┘                             └──────────────────────┘
+### Backend (Next.js)         ▼                                                      ▼│   React + Vite       │   ◄──────────────────────   │   Next.js API        ││   React + Vite       │   ◄──────────────────────   │   Next.js API        │
+
+- **Framework**: Next.js 15 con App Router y TypeScript
+
+- **Base de datos**: SQLite con Prisma ORM  localStorage (JWT)                                    SQLite Database
+
+- **Autenticación**: JWT con bcrypt para contraseñas
+
+- **API**: REST endpoints para cálculos y gestión de datos```│   Puerto: 5173       │                             │   Puerto: 3000       ││   Puerto: 5173       │                             │   Puerto: 3000       │
 
 
 
-### 📦 Stack Tecnológico         │                                                      │         │                                                      │
+---
 
 
 
-| Tecnología       | Propósito                              |         │                                                      │         │                                                      │
+## 📊 Funcionalidades Principales---│                      │                             │                      ││                      │                             │                      │
 
-| ---------------- | -------------------------------------- |
 
-| **React 19**     | Librería de interfaz de usuario        |         ▼                                                      ▼         ▼                                                      ▼
+
+### 1. Calculadora Básica
+
+- **Ubicación**: Frontend únicamente
+
+- **Características**: ## 🎨 FRONTEND└──────────────────────┘                             └──────────────────────┘└──────────────────────┘                             └──────────────────────┘
+
+  - Cálculos instantáneos sin autenticación
+
+  - Tarifas RST predefinidas (0%, 1%, 2%, 3%)
+
+  - Resultados no persistentes
+
+- **Flujo**: Formulario → Cálculo local → Resultado inmediato### 📦 Stack Tecnológico         │                                                      │         │                                                      │
+
+
+
+### 2. Calculadora Avanzada
+
+- **Ubicación**: Frontend + Backend
+
+- **Características**:| Tecnología       | Propósito                              |         │                                                      │         │                                                      │
+
+  - Requiere autenticación
+
+  - Incluye deducciones y gastos deducibles| ---------------- | -------------------------------------- |
+
+  - Historial de cálculos persistente
+
+  - Generación de reportes en PDF| **React 19**     | Librería de interfaz de usuario        |         ▼                                                      ▼         ▼                                                      ▼
+
+- **Flujo**: Autenticación → Formulario → API → Base de datos → Resultado
 
 | **Vite**         | Herramienta de desarrollo rápida       |
 
-| **Tailwind CSS** | Framework de estilos                   |  localStorage (JWT)                                    SQLite Database  localStorage (JWT)                                    SQLite Database
+### 3. Sistema de Autenticación
 
-| **Lucide React** | Librería de iconos                     |
+- **Registro/Login**: Email + contraseña| **Tailwind CSS** | Framework de estilos                   |  localStorage (JWT)                                    SQLite Database  localStorage (JWT)                                    SQLite Database
+
+- **Seguridad**: Contraseñas hasheadas con bcryptjs
+
+- **Tokens**: JWT con expiración de 7 días| **Lucide React** | Librería de iconos                     |
+
+- **Persistencia**: localStorage en el frontend
 
 | **jsPDF**        | Generación de PDFs                     |```
 
+---
+
 | **html2canvas**  | Captura de elementos HTML como imagen  |
 
----
-
-**Puerto:** `5173` | **URL:** `http://localhost:5173`
-
-## 🎨 FRONTEND## 🎨 FRONTEND
-
-### 🧩 Componentes Principales
-
-### 📦 Stack Tecnológico### 📦 Stack Tecnológico
-
-- **App.jsx** - Componente raíz, gestiona autenticación y navegación
-
-- **AuthModal.jsx** - Modal de login/registro, maneja tokens JWT| Tecnología | Propósito || Tecnología | Propósito |
-
-- **SimpleCalculator.jsx** - Cálculos locales sin autenticación
-
-- **AdvancedCalculator.jsx** - Funcionalidades completas con backend| ---------------- | -------------------------------------- || ---------------- | ------------------------------------- |
-
-
-
-### 🎨 Estilos y Comunicación| **React 19** | Librería de interfaz de usuario || **React 19** | Librería de interfaz de usuario |
-
-
-
-- **Tailwind CSS** con diseño responsivo y tema verde| **Vite** | Herramienta de desarrollo rápida || **Vite** | Herramienta de desarrollo rápida |
-
-- **HTTP/JSON** para comunicación con backend
-
-- **JWT Bearer Token** para autenticación| **Tailwind CSS** | Framework de estilos || **Tailwind CSS** | Framework de estilos |
-
-- **localStorage** para persistencia de sesión
-
-| **Lucide React** | Librería de iconos || **Lucide React** | Librería de iconos |
+## 🗄️ Modelo de Datos
 
 ---
 
-| **jsPDF** | Generación de PDFs || **jsPDF** | Generación de PDFs |
+### User (Usuarios)
 
-## ⚙️ BACKEND
+```typescript**Puerto:** `5173` | **URL:** `http://localhost:5173`
 
-| **html2canvas** | Captura de elementos HTML como imagen || **html2canvas** | Captura de elementos HTML como imagen |
+id: string          // ID único
 
-### 📦 Stack Tecnológico
+email: string       // Email único## 🎨 FRONTEND## 🎨 FRONTEND
 
-**Puerto:** `5173` **Puerto:** `5173`
+password: string    // Contraseña hasheada
 
-| Tecnología       | Propósito                           |
-
-| ---------------- | ----------------------------------- |**URL de desarrollo:** `http://localhost:5173`**URL de desarrollo:** `http://localhost:5173`
-
-| **Next.js 15**   | Framework para API REST             |
-
-| **TypeScript**   | Tipado estático                     |### 🧩 Componentes Principales### 🧩 Componentes Principales
-
-| **Prisma ORM**   | Manejo de base de datos type-safe   |
-
-| **SQLite**       | Base de datos (desarrollo)          |#### **App.jsx**#### **App.jsx**
-
-| **bcryptjs**     | Encriptación de contraseñas         |
-
-| **jsonwebtoken** | Autenticación JWT                   |- Componente raíz de la aplicación
-
-
-
-**Puerto:** `3000` | **URL:** `http://localhost:3000`- Gestiona el estado de autenticación (usuario y token JWT)- Componente raíz de la aplicación
-
-
-
-### 🗄️ Modelos de Base de Datos- Controla qué calculadora mostrar (básica o avanzada)- Gestiona el estado de autenticación (usuario y token JWT)
-
-
-
-- **User** - ID, email único, password hasheada, nombre- Maneja la persistencia de sesión mediante localStorage- Controla qué calculadora mostrar (básica o avanzada)
-
-- **Calculation** - Cálculos con ventas, tipo/tiempo actividad, impuestos, deducciones
-
-- **ImportedSale** - Ventas importadas para RPA con archivo y estado- Maneja la persistencia de sesión mediante localStorage
-
-
-
-### 🔐 Seguridad#### **AuthModal.jsx**
-
-
-
-- Contraseñas hasheadas con bcryptjs (12 salt rounds)- Modal de login y registro#### **AuthModal.jsx**
-
-- Tokens JWT con expiración de 7 días
-
-- Middleware de autorización para rutas protegidas- Alterna entre modo login y registro
-
-- CORS configurado para frontend
-
-- Envía credenciales al backend- Modal de login y registro
-
----
-
-- Almacena el token JWT recibido en localStorage- Alterna entre modo login y registro
-
-## 🌐 API ENDPOINTS
-
-- Envía credenciales al backend
-
-| Método | Endpoint              | Auth     | Funcionalidad                      |
-
-| ------ | --------------------- | -------- | ---------------------------------- |#### **SimpleCalculator.jsx**- Almacena el token JWT recibido en localStorage
-
-| POST   | `/api/auth`           | No       | Login/registro de usuarios         |
-
-| POST   | `/api/calcular`       | Opcional | Cálculo de impuestos RST           |- Calculadora básica que funciona completamente en el navegador
-
-| GET    | `/api/historial`      | Sí       | Obtener historial de cálculos      |
-
-| POST   | `/api/pdf`            | Sí       | Generar reporte en PDF             |- No requiere autenticación#### **SimpleCalculator.jsx**
-
-| POST   | `/api/upload-excel`   | Sí       | Importar ventas (RPA)              |
-
-| POST   | `/api/process-batch`  | Sí       | Procesar ventas en lote (RPA)      |- Realiza cálculos instantáneos usando tarifas RST predefinidas
-
-
-
----- Ideal para consultas rápidas sin guardar datos- Calculadora básica que funciona completamente en el navegador
-
-
-
-## 🔗 COMUNICACIÓN FRONTEND-BACKEND- No requiere autenticación
-
-
-
-### 📡 Flujo Principal#### **AdvancedCalculator.jsx**- Realiza cálculos instantáneos usando tarifas RST predefinidas
-
-
-
-1. **Autenticación:** Usuario → AuthModal → POST /api/auth → Token JWT → localStorage- Calculadora avanzada con funcionalidades completas- Ideal para consultas rápidas sin guardar datos
-
-2. **Cálculo:** Formulario → POST /api/calcular → Resultado + Guardado en BD
-
-3. **PDF:** Solicitud → POST /api/pdf → HTML → html2canvas → jsPDF → Descarga- Requiere autenticación
-
-
-
-### 🔧 Configuración- Permite agregar deducciones y gastos deducibles#### **AdvancedCalculator.jsx**
-
-
-
-**Variables de entorno:**- Guarda cálculos en la base de datos
-
-```bash
-
-# Frontend- Muestra historial de cálculos anteriores- Calculadora avanzada con funcionalidades completas
-
-VITE_API_BASE_URL=http://localhost:3000
-
-- Genera reportes en PDF- Requiere autenticación
-
-# Backend
-
-DATABASE_URL="file:./dev.db"- Permite agregar deducciones y gastos deducibles
-
-JWT_SECRET="tu_secreto_super_seguro"
-
-```### 🔄 Comunicación con el Backend- Guarda cálculos en la base de datos
-
-
-
----- Muestra historial de cálculos anteriores
-
-
-
-## ✨ CARACTERÍSTICAS PRINCIPALESEl frontend se comunica con el backend mediante:- Genera reportes en PDF
-
-
-
-### 📊 Dos Modos de Cálculo- **Protocolo:** HTTP/JSON### � Comunicación con el Backend
-
-
-
-**Básica:** Navegador local, instantánea, sin auth, ideal para consultas rápidas- **Método de autenticación:** JWT Bearer Token en header Authorization
-
-
-
-**Avanzada:** Backend, con deducciones/gastos, historial, PDFs, uso profesional- **Variable de entorno:** `VITE_API_BASE_URL=http://localhost:3000`El frontend se comunica con el backend mediante:
-
-
-
-### 📄 Generación de PDFs**Flujo de autenticación:**- **Protocolo:** HTTP/JSON
-
-
-
-Sistema híbrido: Backend genera HTML → Frontend renderiza → html2canvas captura → jsPDF convierte1. Usuario ingresa credenciales en AuthModal- **Método de autenticación:** JWT Bearer Token en header Authorization
-
-
-
-### 🤖 Automatización RPA2. Se envía petición POST a `/api/auth`- **Variable de entorno:** `VITE_API_BASE_URL=http://localhost:3000`
-
-
-
-Integración opcional con n8n: importa Excel/CSV → procesa en lote → guarda resultados3. Backend valida y retorna token JWT
-
-
-
----4. Token se almacena en localStorage**Flujo de autenticación:**
-
-
-
-## 🚀 EJECUCIÓN DEL PROYECTO5. Token se incluye en todas las peticiones autenticadas
-
-
-
-### Instalación6. Usuario ingresa credenciales en AuthModal
-
-```bash
-
-# Frontend### 🎨 Estilos2. Se envía petición POST a `/api/auth`
-
-cd frontend && npm install
-
-3. Backend valida y retorna token JWT
-
-# Backend
-
-cd backend && npm install && npx prisma generate && npx prisma db push**Tailwind CSS** se utiliza para todos los estilos con:4. Token se almacena en localStorage
+name: string?       // Nombre opcional### 🧩 Componentes Principales
 
 ````
 
-- Diseño responsivo (mobile-first)5. Token se incluye en todas las peticiones autenticadas
+### 📦 Stack Tecnológico### 📦 Stack Tecnológico
 
-### Desarrollo
+### Calculation (Cálculos)
 
-````bash- Paleta de colores verde (tema fiscal)
+```typescript- **App.jsx** - Componente raíz, gestiona autenticación y navegación
 
-# Terminal 1: Frontend
+id: string              // ID único
 
-cd frontend && npm run dev  # http://localhost:5173- Cards y sombras para jerarquía visual### 🎨 Estilos
+userId: string          // Referencia al usuario- **AuthModal.jsx** - Modal de login/registro, maneja tokens JWT| Tecnología | Propósito || Tecnología | Propósito |
+
+ventasMensuales: number // Ventas del mes
+
+tipoActividad: string   // Comercial/Servicios/Manufacturera- **SimpleCalculator.jsx** - Cálculos locales sin autenticación
+
+tiempoActividad: string // <1 año / 1-2 años / >2 años
+
+impuestoMensual: number // Impuesto calculado mensual- **AdvancedCalculator.jsx** - Funcionalidades completas con backend| ---------------- | -------------------------------------- || ---------------- | ------------------------------------- |
+
+impuestoAnual: number   // Impuesto proyectado anual
+
+deducciones?: number    // Deducciones aplicadas
+
+```
+
+### 🎨 Estilos y Comunicación| **React 19** | Librería de interfaz de usuario || **React 19** | Librería de interfaz de usuario |
+
+### ImportedSale (RPA)
+
+````typescript
+
+id: string              // ID único
+
+userId: string          // Usuario propietario- **Tailwind CSS** con diseño responsivo y tema verde| **Vite** | Herramienta de desarrollo rápida || **Vite** | Herramienta de desarrollo rápida |
+
+ventasMensuales: number // Datos importados
+
+fileName: string        // Archivo origen- **HTTP/JSON** para comunicación con backend
+
+processed: boolean      // Estado de procesamiento
+
+```- **JWT Bearer Token** para autenticación| **Tailwind CSS** | Framework de estilos || **Tailwind CSS** | Framework de estilos |
 
 
+
+---- **localStorage** para persistencia de sesión
+
+
+
+## 🌐 API Endpoints| **Lucide React** | Librería de iconos || **Lucide React** | Librería de iconos |
+
+
+
+### POST `/api/auth`---
+
+**Autenticación de usuarios**
+
+- Body: `{ action: "login"|"register", email, password, name? }`| **jsPDF** | Generación de PDFs || **jsPDF** | Generación de PDFs |
+
+- Response: `{ success: boolean, data: { user, token } }`
+
+## ⚙️ BACKEND
+
+### POST `/api/calcular`
+
+**Cálculo de impuestos RST**| **html2canvas** | Captura de elementos HTML como imagen || **html2canvas** | Captura de elementos HTML como imagen |
+
+- Headers: `Authorization: Bearer [token]` (opcional)
+
+- Body: `{ ventasMensuales, tipoActividad, tiempoActividad, deducciones?, ... }`### 📦 Stack Tecnológico
+
+- Response: `{ success: boolean, data: { impuestoMensual, impuestoAnual, ... } }`
+
+**Puerto:** `5173` **Puerto:** `5173`
+
+### GET `/api/historial`
+
+**Obtener historial de cálculos**| Tecnología       | Propósito                           |
+
+- Headers: `Authorization: Bearer [token]` (requerido)
+
+- Response: `{ success: boolean, data: Calculation[] }`| ---------------- | ----------------------------------- |**URL de desarrollo:** `http://localhost:5173`**URL de desarrollo:** `http://localhost:5173`
+
+
+
+### POST `/api/pdf`| **Next.js 15**   | Framework para API REST             |
+
+**Generar reporte en PDF**
+
+- Headers: `Authorization: Bearer [token]` (requerido)| **TypeScript**   | Tipado estático                     |### 🧩 Componentes Principales### 🧩 Componentes Principales
+
+- Body: `{ calculationData }`
+
+- Response: `{ success: boolean, data: { htmlContent, filename } }`| **Prisma ORM**   | Manejo de base de datos type-safe   |
+
+
+
+---| **SQLite**       | Base de datos (desarrollo)          |#### **App.jsx**#### **App.jsx**
+
+
+
+## 🔐 Seguridad| **bcryptjs**     | Encriptación de contraseñas         |
+
+
+
+### Autenticación| **jsonwebtoken** | Autenticación JWT                   |- Componente raíz de la aplicación
+
+- **JWT**: Tokens firmados con secret del servidor
+
+- **bcrypt**: Hash de contraseñas con salt rounds = 12
+
+- **Middleware**: Verificación automática de tokens en rutas protegidas
+
+**Puerto:** `3000` | **URL:** `http://localhost:3000`- Gestiona el estado de autenticación (usuario y token JWT)- Componente raíz de la aplicación
+
+### CORS y Headers
+
+- **Origin**: Configurado para frontend en puerto 5173
+
+- **Headers**: Authorization bearer token para APIs autenticadas
+
+- **Credentials**: Habilitado para cookies y headers### 🗄️ Modelos de Base de Datos- Controla qué calculadora mostrar (básica o avanzada)- Gestiona el estado de autenticación (usuario y token JWT)
+
+
+
+---
+
+
+
+## 🚀 Configuración y Despliegue- **User** - ID, email único, password hasheada, nombre- Maneja la persistencia de sesión mediante localStorage- Controla qué calculadora mostrar (básica o avanzada)
+
+
+
+### Variables de Entorno- **Calculation** - Cálculos con ventas, tipo/tiempo actividad, impuestos, deducciones
+
+
+
+**Frontend (.env)**- **ImportedSale** - Ventas importadas para RPA con archivo y estado- Maneja la persistencia de sesión mediante localStorage
+
+```bash
+
+VITE_API_BASE_URL=http://localhost:3000
+
+````
+
+### 🔐 Seguridad#### **AuthModal.jsx**
+
+**Backend (.env)**
+
+```bash
+
+DATABASE_URL="file:./dev.db"
+
+JWT_SECRET="secret_super_seguro"- Contraseñas hasheadas con bcryptjs (12 salt rounds)- Modal de login y registro#### **AuthModal.jsx**
+
+```
+
+- Tokens JWT con expiración de 7 días
+
+### Comandos de Desarrollo
+
+````bash- Middleware de autorización para rutas protegidas- Alterna entre modo login y registro
+
+# Instalar dependencias
+
+npm run install:all- CORS configurado para frontend
+
+
+
+# Configurar base de datos- Envía credenciales al backend- Modal de login y registro
+
+cd backend && npx prisma generate && npx prisma db push
+
+---
+
+# Desarrollo (ambos servidores)
+
+npm run dev- Almacena el token JWT recibido en localStorage- Alterna entre modo login y registro
+
+
+
+# Frontend: http://localhost:5173## 🌐 API ENDPOINTS
+
+# Backend: http://localhost:3000
+
+```- Envía credenciales al backend
+
+
+
+### Estructura del Proyecto| Método | Endpoint              | Auth     | Funcionalidad                      |
+
+````
+
+simula-tu-impuesto/| ------ | --------------------- | -------- | ---------------------------------- |#### **SimpleCalculator.jsx**- Almacena el token JWT recibido en localStorage
+
+├── frontend/ # React + Vite
+
+│ ├── src/| POST | `/api/auth` | No | Login/registro de usuarios |
+
+│ │ ├── components/ # SimpleCalculator, AdvancedCalculator, AuthModal
+
+│ │ └── App.jsx # Componente principal| POST | `/api/calcular` | Opcional | Cálculo de impuestos RST |- Calculadora básica que funciona completamente en el navegador
+
+│ └── package.json
+
+├── backend/ # Next.js API| GET | `/api/historial` | Sí | Obtener historial de cálculos |
+
+│ ├── src/app/api/ # Endpoints REST
+
+│ ├── prisma/ # Schema y migraciones| POST | `/api/pdf` | Sí | Generar reporte en PDF |- No requiere autenticación#### **SimpleCalculator.jsx**
+
+│ └── package.json
+
+└── package.json # Scripts del monorepo| POST | `/api/upload-excel` | Sí | Importar ventas (RPA) |
+
+```````
+
+| POST   | `/api/process-batch`  | Sí       | Procesar ventas en lote (RPA)      |- Realiza cálculos instantáneos usando tarifas RST predefinidas
+
+---
+
+
+
+## 🎯 Flujos de Usuario
+
+---- Ideal para consultas rápidas sin guardar datos- Calculadora básica que funciona completamente en el navegador
+
+### Usuario Casual
+
+1. Accede a la aplicación
+
+2. Usa calculadora básica
+
+3. Obtiene estimación instantánea## 🔗 COMUNICACIÓN FRONTEND-BACKEND- No requiere autenticación
+
+4. No requiere registro
+
+
+
+### Usuario Profesional
+
+1. Se registra/autentica### 📡 Flujo Principal#### **AdvancedCalculator.jsx**- Realiza cálculos instantáneos usando tarifas RST predefinidas
+
+2. Usa calculadora avanzada
+
+3. Incluye deducciones
+
+4. Guarda cálculos en historial
+
+5. Genera reportes en PDF1. **Autenticación:** Usuario → AuthModal → POST /api/auth → Token JWT → localStorage- Calculadora avanzada con funcionalidades completas- Ideal para consultas rápidas sin guardar datos
+
+
+
+### Procesamiento Masivo (RPA)2. **Cálculo:** Formulario → POST /api/calcular → Resultado + Guardado en BD
+
+1. Importa archivo Excel/CSV
+
+2. Sistema procesa ventas en lote3. **PDF:** Solicitud → POST /api/pdf → HTML → html2canvas → jsPDF → Descarga- Requiere autenticación
+
+3. Almacena resultados en base de datos
+
+
+
+---
+
+### 🔧 Configuración- Permite agregar deducciones y gastos deducibles#### **AdvancedCalculator.jsx**
+
+## 📄 Sistema de PDFs
+
+
+
+### Proceso Híbrido
+
+1. **Backend**: Genera HTML estructurado con datos del cálculo**Variables de entorno:**- Guarda cálculos en la base de datos
+
+2. **Frontend**: Renderiza HTML en elemento temporal
+
+3. **html2canvas**: Captura elemento como imagen```bash
+
+4. **jsPDF**: Convierte imagen a documento PDF
+
+5. **Download**: Descarga automática del archivo# Frontend- Muestra historial de cálculos anteriores- Calculadora avanzada con funcionalidades completas
+
+
+
+### VentajasVITE_API_BASE_URL=http://localhost:3000
+
+- **Flexibilidad**: Control total del diseño con HTML/CSS
+
+- **Performance**: Sin necesidad de headless browser en servidor- Genera reportes en PDF- Requiere autenticación
+
+- **Compatibilidad**: Funciona en todos los navegadores modernos
+
+# Backend
+
+---
+
+DATABASE_URL="file:./dev.db"- Permite agregar deducciones y gastos deducibles
+
+## 🔄 Comunicación Frontend-Backend
+
+JWT_SECRET="tu_secreto_super_seguro"
+
+### Flujo de Autenticación
+
+``````### 🔄 Comunicación con el Backend- Guarda cálculos en la base de datos
+
+Usuario → AuthModal → POST /api/auth → JWT Token → localStorage
+
+```````
+
+### Flujo de Cálculo---- Muestra historial de cálculos anteriores
+
+```
+
+Formulario → POST /api/calcular + Bearer Token → Resultado + BD
+
+```
+
+## ✨ CARACTERÍSTICAS PRINCIPALESEl frontend se comunica con el backend mediante:- Genera reportes en PDF
+
+### Gestión de Estado
+
+- **React useState**: Estados locales de componentes
+
+- **localStorage**: Persistencia de sesión (user + token)
+
+- **useEffect**: Sincronización automática con backend### 📊 Dos Modos de Cálculo- **Protocolo:** HTTP/JSON### � Comunicación con el Backend
+
+---
+
+## ⚡ Optimizaciones**Básica:** Navegador local, instantánea, sin auth, ideal para consultas rápidas- **Método de autenticación:** JWT Bearer Token en header Authorization
+
+### Frontend
+
+- **Code Splitting**: Separación de bundles para vendor, UI y PDF
+
+- **Lazy Loading**: Componentes cargados bajo demanda**Avanzada:** Backend, con deducciones/gastos, historial, PDFs, uso profesional- **Variable de entorno:** `VITE_API_BASE_URL=http://localhost:3000`El frontend se comunica con el backend mediante:
+
+- **Asset Optimization**: Vite optimiza automáticamente recursos
+
+### Backend
+
+- **Prisma ORM**: Queries type-safe y optimizadas### 📄 Generación de PDFs**Flujo de autenticación:**- **Protocolo:** HTTP/JSON
+
+- **Índices de DB**: Optimización para consultas frecuentes
+
+- **Límites de consulta**: Paginación automática (últimos 50 cálculos)
+
+---Sistema híbrido: Backend genera HTML → Frontend renderiza → html2canvas captura → jsPDF convierte1. Usuario ingresa credenciales en AuthModal- **Método de autenticación:** JWT Bearer Token en header Authorization
+
+## 🎯 Características Destacadas
+
+### Arquitectura Dual### 🤖 Automatización RPA2. Se envía petición POST a `/api/auth`- **Variable de entorno:** `VITE_API_BASE_URL=http://localhost:3000`
+
+- **Básica**: 100% frontend para velocidad máxima
+
+- **Avanzada**: Fullstack para funcionalidades completas
+
+### EscalabilidadIntegración opcional con n8n: importa Excel/CSV → procesa en lote → guarda resultados3. Backend valida y retorna token JWT
+
+- **Monorepo**: Desarrollo unificado con scripts coordinados
+
+- **TypeScript**: Tipado estático para reducir errores
+
+- **Prisma**: ORM type-safe para evolución segura de esquemas
+
+---4. Token se almacena en localStorage**Flujo de autenticación:**
+
+### UX/UI
+
+- **Responsive**: Diseño mobile-first con Tailwind
+
+- **Tema coherente**: Paleta verde (tema fiscal/financiero)
+
+- **Loading states**: Feedback visual en todas las operaciones## 🚀 EJECUCIÓN DEL PROYECTO5. Token se incluye en todas las peticiones autenticadas
+
+---
+
+## 🔮 Consideraciones de Producción### Instalación6. Usuario ingresa credenciales en AuthModal
+
+### Base de Datos```bash
+
+- **Desarrollo**: SQLite local
+
+- **Producción**: PostgreSQL (Vercel Postgres recomendado)# Frontend### 🎨 Estilos2. Se envía petición POST a `/api/auth`
+
+### Deploymentcd frontend && npm install
+
+- **Frontend**: Vercel/Netlify con build automático
+
+- **Backend**: Vercel Serverless Functions3. Backend valida y retorna token JWT
+
+- **Dominio**: Configuración de DNS y SSL automático
+
+# Backend
+
+### Monitoreo
+
+- **Logs**: Next.js built-in loggingcd backend && npm install && npx prisma generate && npx prisma db push**Tailwind CSS** se utiliza para todos los estilos con:4. Token se almacena en localStorage
+
+- **Analytics**: Vercel Analytics para métricas
+
+- **Error Tracking**: Sentry (recomendado para producción)````
+
+---- Diseño responsivo (mobile-first)5. Token se incluye en todas las peticiones autenticadas
+
+## 📚 Tecnologías Clave### Desarrollo
+
+| Tecnología | Versión | Propósito |````bash- Paleta de colores verde (tema fiscal)
+
+|------------|---------|-----------|
+
+| React | 19.x | UI Library |# Terminal 1: Frontend
+
+| Next.js | 15.x | API Framework |
+
+| TypeScript | 5.x | Type Safety |cd frontend && npm run dev # http://localhost:5173- Cards y sombras para jerarquía visual### 🎨 Estilos
+
+| Prisma | 6.x | Database ORM |
+
+| Tailwind | 3.x | CSS Framework |
+
+| Vite | 7.x | Build Tool |
 
 # Terminal 2: Backend- Transiciones suaves para mejor UX
 
-cd backend && npm run dev   # http://localhost:3000
+---
 
-```**Tailwind CSS** se utiliza para todos los estilos con:
+cd backend && npm run dev # http://localhost:3000
+
+## ✅ Conclusión
+
+````**Tailwind CSS** se utiliza para todos los estilos con:
+
+**Simula tu Impuesto** combina una arquitectura moderna y escalable con una experiencia de usuario intuitiva. La separación de responsabilidades entre frontend y backend permite flexibilidad en el desarrollo y despliegue, mientras que el sistema dual de cálculos atiende tanto usuarios casuales como profesionales.
 
 
+
+La implementación utiliza las mejores prácticas de desarrollo web moderno, incluyendo TypeScript para type safety, Prisma para gestión type-safe de datos, y un sistema de autenticación robusto con JWT.
 
 ------
 
+---
 
 
-## 🎯 CASOS DE USO- Diseño responsivo (mobile-first)
+
+*Documentación técnica - Proyecto Simula tu Impuesto*
+
+*Autor: Daniel Leal | Noviembre 2025*## 🎯 CASOS DE USO- Diseño responsivo (mobile-first)
 
 
 
