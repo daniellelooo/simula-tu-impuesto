@@ -57,7 +57,11 @@ simula-tu-impuesto/ (Monorepo Fullstack)
 └── 📄 README.md             # Documentación
 ```
 
-## 🚀 Inicio Rápido
+## � Documentación Técnica
+
+- Consulta la guía completa para desarrolladores (arquitectura, endpoints y componentes) en `docs/DOCUMENTACION_TECNICA.md`.
+
+## �🚀 Inicio Rápido
 
 ### Prerrequisitos
 
